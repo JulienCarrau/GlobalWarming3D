@@ -16,7 +16,6 @@ public class DataLoader {
         loadCSV(CSVName);
         setAvailableYears();
         setKnownLocations();
-        System.out.println(knownLocations.get(1));
     }
 
     /**
@@ -56,11 +55,27 @@ public class DataLoader {
     }
 
     /**
-     *
+     *  Initialize known locations array. Basically it takes the 2 firsts columns from first to last indexes and create LatLonPair instances.
      */
     private void setKnownLocations() {
         knownLocations = new ArrayList<>();
         for (int i = 1; i < csv.size(); i++)
             knownLocations.add(new LatLonPair(Integer.parseInt(csv.get(i)[0]), Integer.parseInt(csv.get(i)[1])));
+    }
+
+    /**
+     * Available years getter.
+     * @return ArrayList<Integer>
+     */
+    public ArrayList<Integer> getAvailableYears() {
+        return availableYears;
+    }
+
+    /**
+     * Known locations getter.
+     * @return ArrayList<LatLonPair>
+     */
+    public ArrayList<LatLonPair> getKnownLocations() {
+        return knownLocations;
     }
 }
