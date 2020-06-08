@@ -87,7 +87,7 @@ public class DataLoader {
     public ArrayList<Float> getAllTempAnomalyForYear(int year) {
         int yearIndex = 2; // By default indexYear is 2 (corresponding to year 1880)
         for (int j = 2; j < csv.get(0).length; j++)
-            if (csv.get(0)[j].substring(1, csv.get(0)[j].length() - 1).equals(year)) {
+            if (Integer.parseInt(csv.get(0)[j].substring(1, csv.get(0)[j].length() - 1)) == year) {
                 yearIndex = j;
                 break;
             }
