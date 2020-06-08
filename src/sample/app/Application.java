@@ -79,10 +79,19 @@ public class Application {
      * @param lon Longitude value.
      * @return ArrayList<Float> of all returned values by getYearTempAnomalyAtLatLon.
      */
-    public ArrayList<Float> getAllTempAnomalyForLatLon(int lat, int lon) {
+    public ArrayList<Float> getAllTempAnomalyAtLatLon(int lat, int lon) {
         ArrayList<Float> out = new ArrayList<>();
         for (int year : allTempAnomaly.keySet())
             out.add(getYearTempAnomalyAtLatLon(year, lat, lon));
         return out;
+    }
+
+    /**
+     * Get all temperatures anomaly in the world according to a specific year.
+     * @param year Specific wanted year.
+     * @return ArrayList<Float> containing all values.
+     */
+    public ArrayList<Float> getAllTempAnomalyForYear(int year) {
+        return dataLoader.getAllTempAnomalyForYear(year);
     }
 }

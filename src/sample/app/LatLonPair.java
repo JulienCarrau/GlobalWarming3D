@@ -8,10 +8,18 @@ public class LatLonPair {
         this.lon = lon;
     }
 
+    /**
+     * Latitude getter.
+     * @return Int latitude.
+     */
     public int getLat() {
         return lat;
     }
 
+    /**
+     * Longitude getter.
+     * @return Int longitude.
+     */
     public int getLon() {
         return lon;
     }
