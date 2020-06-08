@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class DataLoader {
+    private ArrayList<String[]> csv; // Contains the whole CSV : csv.get(i)[j] gives the i-th line and j-th column
     private ArrayList<Integer> availableYears;
     private ArrayList<ArrayList<Float>> allData;
     private ArrayList<LatLonPair> knownLocations;
@@ -17,6 +18,7 @@ public class DataLoader {
     }
 
     private void loadCSV(String CSVName) {
+        csv = new ArrayList<>();
         try {
             FileReader file = new FileReader(CSVName);
             BufferedReader bufRead = new BufferedReader(file);
@@ -25,19 +27,16 @@ public class DataLoader {
             while (line != null) {
                 String[] array = line.split(",");
 
-                int id = Integer.parseInt(array[0]);
-                float val = Float.parseFloat(array[6]);
-
-                System.out.println(id + " " + val);
+                csv.add(array);
 
                 line = bufRead.readLine();
             }
-
             bufRead.close();
             file.close();
 
         } catch (IOException e) {
             e.printStackTrace();
         }
+        System.out.println(csv.get(0)[2]);
     }
 }
