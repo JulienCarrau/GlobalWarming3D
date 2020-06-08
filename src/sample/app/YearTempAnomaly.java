@@ -23,12 +23,12 @@ public class YearTempAnomaly {
         boolean firstValueSet = false; // To initialize max and min temperatures anomaly with first hashmap's value (because there's no first index)
         for (LatLonPair llp : tempAnomaly.keySet()) {
             if (!firstValueSet) {
-                maxTempAnomaly = tempAnomaly.get(llp);
                 minTempAnomaly = tempAnomaly.get(llp);
+                maxTempAnomaly = tempAnomaly.get(llp);
                 firstValueSet = true;
             }
-            if (tempAnomaly.get(llp) > maxTempAnomaly) maxTempAnomaly = tempAnomaly.get(llp);
             if (tempAnomaly.get(llp) < minTempAnomaly) minTempAnomaly = tempAnomaly.get(llp);
+            if (tempAnomaly.get(llp) > maxTempAnomaly) maxTempAnomaly = tempAnomaly.get(llp);
         }
     }
 

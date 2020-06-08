@@ -15,6 +15,7 @@ public class Application {
         dataLoader = new DataLoader(CSVName);
         knownLocations = dataLoader.getKnownLocations();
         setAllTempAnomaly();
+        setMinAndMaxTempAnomaly();
     }
 
     /**
@@ -24,6 +25,22 @@ public class Application {
         allTempAnomaly = new HashMap<>();
         for (Integer year : dataLoader.getAvailableYears())
             allTempAnomaly.put(year, new YearTempAnomaly(year, dataLoader.getAllTempAnomalyForYear(year), knownLocations));
+    }
+
+    /**
+     * Initialize global minimal and maximal values of temperatures anomaly.
+     */
+    private void setMinAndMaxTempAnomaly() {
+        boolean firstValueSet = false; // To initialize max and min temperatures anomaly with first hashmap's value (because there's no first index)
+        for (int year : allTempAnomaly.keySet()) {
+            if (!firstValueSet) {
+                globalMin = allTempAnomaly.get(year).getMinTempAnomaly();
+                globalMax = allTempAnomaly.get(year).getMaxTempAnomaly();
+                firstValueSet = true;
+            }
+            if (allTempAnomaly.get(year).getMinTempAnomaly() < globalMin) globalMin = allTempAnomaly.get(year).getMinTempAnomaly();
+            if (allTempAnomaly.get(year).getMaxTempAnomaly() > globalMax) globalMax = allTempAnomaly.get(year).getMaxTempAnomaly();
+        }
     }
 
     /**

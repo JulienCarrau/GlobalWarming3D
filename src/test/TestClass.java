@@ -18,33 +18,29 @@ public class TestClass {
 	}
 
 	@Test
-	public void YearNumberTest() {		
-
+	public void YearNumberTest() {
 		//Vérifier que le nombre d'années est égal à 141
 		assertEquals(141, app.getAvailableYears().size());
-	    
 	}
 	
 	
 	@Test
 	public void MinTemperatureTest() {
 		//Vérifier que la température minimale dans le fichier est -6.2441664
-		//assertEquals();
-
+		assertEquals(-6.2441664f, app.getGlobalMinAndMax().get(0), 0.00001f);
 	}	
 	
 	@Test
 	public void MaxTemperatureTest() {
 		//Vérifier que la température maximale dans le fichier est 8.97125
-		
-
+		assertEquals(8.97125f, app.getGlobalMinAndMax().get(1), 0.00001f);
 	}	
 	
 	
 	@Test
 	public void TemperatureAnomalyTest() {
 		//Vérifier que l'anomalie de température en 1881 pour la zone 12°-154° est de 0.127083330492799f
-		assertEquals(0.127083330492799f, app.getYearTempAnomalyAtLatLon(1881, 12, 154), 0.000001f);
+		assertEquals(0.127083330492799f, app.getYearTempAnomalyAtLatLon(1881, 12, 154), 0.00001f);
 	}
 
 	@Test
