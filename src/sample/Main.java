@@ -19,6 +19,7 @@ public class Main { /* extends Application {
 
     public static void main(String[] args) {
         Application app = new Application("src/sample/app/data/tempanomaly_4x4grid.csv");
+        System.out.println(app.getYearTempAnomaly(1930));
         //launch(args);
     }
 }

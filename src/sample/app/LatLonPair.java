@@ -33,6 +33,6 @@ public class LatLonPair {
 
     @Override
     public String toString() {
-        return "Latitude : " + getLat() + ", longitude : " + getLon() + ".\n";
+        return "Latitude : " + getLat() + ", longitude : " + getLon();
     }
 }

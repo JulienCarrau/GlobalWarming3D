@@ -21,4 +21,13 @@ public class YearTempAnomaly {
     public float getLocalTempAnomaly(int lat, int lon) {
         return tempAnomaly.get(new LatLonPair(lat, lon));
     }
+
+    @Override
+    public String toString() {
+        StringBuilder out = new StringBuilder();
+        out.append("Year " + getYear() + " :\n");
+        for (LatLonPair llp : tempAnomaly.keySet())
+            out.append(llp.toString() + " : " + tempAnomaly.get(llp).toString()).append("\n");
+        return out.toString();
+    }
 }
