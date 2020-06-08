@@ -25,9 +25,9 @@ public class YearTempAnomaly {
     @Override
     public String toString() {
         StringBuilder out = new StringBuilder();
-        out.append("Year " + getYear() + " :\n");
+        out.append("Year ").append(getYear()).append(" :\n");
         for (LatLonPair llp : tempAnomaly.keySet())
-            out.append(llp.toString() + " : " + tempAnomaly.get(llp).toString()).append("\n");
+            out.append(llp.toString()).append(" : ").append(tempAnomaly.get(llp).toString()).append("\n");
         return out.toString();
     }
 }
