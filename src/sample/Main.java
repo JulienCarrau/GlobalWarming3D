@@ -1,10 +1,10 @@
 package sample;
 
-import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import sample.app.Application;
 
 public class Main { /* extends Application {
 
@@ -18,6 +18,7 @@ public class Main { /* extends Application {
 
 
     public static void main(String[] args) {
+        Application app = new Application("src/sample/app/data/tempanomaly_4x4grid.csv");
         //launch(args);
     }
 }
