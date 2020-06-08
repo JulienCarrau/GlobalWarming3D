@@ -15,4 +15,9 @@ public class LatLonPair {
     public int getLon() {
         return lon;
     }
+
+    @Override
+    public String toString() {
+        return "Latitude : " + getLat() + ", longitude : " + getLon() + ".\n";
+    }
 }

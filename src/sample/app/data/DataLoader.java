@@ -10,13 +10,19 @@ import java.util.ArrayList;
 public class DataLoader {
     private ArrayList<String[]> csv; // Contains the whole CSV : csv.get(i)[j] gives the i-th line and j-th column
     private ArrayList<Integer> availableYears;
-    private ArrayList<ArrayList<Float>> allData;
     private ArrayList<LatLonPair> knownLocations;
 
     public DataLoader(String CSVName) {
         loadCSV(CSVName);
+        setAvailableYears();
+        setKnownLocations();
+        System.out.println(knownLocations.get(1));
     }
 
+    /**
+     * Load a CSV according to its name and copy it into a variable.
+     * @param CSVName CSV filename.
+     */
     private void loadCSV(String CSVName) {
         csv = new ArrayList<>();
         try {
@@ -37,6 +43,24 @@ public class DataLoader {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        System.out.println(csv.get(0)[2]);
+    }
+
+    /**
+     * Initialize the available years array. Basically it takes the first csv's line from index 2 to the end.
+     * Because years are between ", we substring from second to before last indexes.
+     */
+    private void setAvailableYears() {
+        availableYears = new ArrayList<>();
+        for (int i = 2; i < csv.get(0).length; i++)
+            availableYears.add(Integer.parseInt(csv.get(0)[i].substring(1, csv.get(0)[i].length() - 1)));
+    }
+
+    /**
+     *
+     */
+    private void setKnownLocations() {
+        knownLocations = new ArrayList<>();
+        for (int i = 1; i < csv.size(); i++)
+            knownLocations.add(new LatLonPair(Integer.parseInt(csv.get(i)[0]), Integer.parseInt(csv.get(i)[1])));
     }
 }
