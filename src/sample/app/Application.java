@@ -15,12 +15,74 @@ public class Application {
         dataLoader = new DataLoader(CSVName);
         knownLocations = dataLoader.getKnownLocations();
         setAllTempAnomaly();
-        System.out.println(allTempAnomaly.get(1880).getLocalTempAnomaly(-64,-102));
     }
 
+    /**
+     * Initialize all temperatures anomaly hasmap. Basically it itterates through all available years and generate a YearTempAnomaly with all temperatures anomaly in this year.
+     */
     private void setAllTempAnomaly() {
         allTempAnomaly = new HashMap<>();
         for (Integer year : dataLoader.getAvailableYears())
-        allTempAnomaly.put(year, new YearTempAnomaly(year, dataLoader.getAllTempAnomalyForYear(year), knownLocations));
+            allTempAnomaly.put(year, new YearTempAnomaly(year, dataLoader.getAllTempAnomalyForYear(year), knownLocations));
+    }
+
+    /**
+     * Get temperatures anomalies for a specific year.
+     * @param year Wanted year.
+     * @return YearTempAnomly corresponding to this year.
+     */
+    public YearTempAnomaly getYearTempAnomaly(int year) {
+        return allTempAnomaly.get(year);
+    }
+
+    /**
+     * Get global maximal and minimal temperature anomaly through all available data.
+     * @return ArrayList<Float> which size is 2 and where index 0 is min and index 1 is max.
+     */
+    public ArrayList<Float> getGlobalMinAndMax() {
+        ArrayList<Float> out = new ArrayList<>();
+        out.add(globalMin);
+        out.add(globalMax);
+        return out;
+    }
+
+    /**
+     * Available years getter.
+     * @return ArrayList<Integer>
+     */
+    public ArrayList<Integer> getAvailableYears() {
+        return dataLoader.getAvailableYears();
+    }
+
+    /**
+     * Known locations getter.
+     * @return ArrayList<LatLonPair>
+     */
+    public ArrayList<LatLonPair> getKnownLocations() {
+        return knownLocations;
+    }
+
+    /**
+     * Get a temperature anomaly for a specific location in the world and at a certain given year.
+     * @param year Wanted year.
+     * @param lat Latitude value.
+     * @param lon Longitude value.
+     * @return A float value corresponding to the temperature anomaly for the specific given period of time and location.
+     */
+    public float getYearTempAnomalyAtLatLon(int year, int lat, int lon) {
+        return allTempAnomaly.get(year).getLocalTempAnomaly(lat, lon);
+    }
+
+    /**
+     * Get all temperatures anomaly for a specific location.
+     * @param lat Latitude value.
+     * @param lon Longitude value.
+     * @return ArrayList<Float> of all returned values by getYearTempAnomalyAtLatLon.
+     */
+    public ArrayList<Float> getAllTempAnomalyForLatLon(int lat, int lon) {
+        ArrayList<Float> out = new ArrayList<>();
+        for (int year : allTempAnomaly.keySet())
+            out.add(getYearTempAnomalyAtLatLon(year, lat, lon));
+        return out;
     }
 }
