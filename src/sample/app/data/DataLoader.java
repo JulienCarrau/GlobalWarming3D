@@ -50,8 +50,8 @@ public class DataLoader {
      */
     private void setAvailableYears() {
         availableYears = new ArrayList<>();
-        for (int i = 2; i < csv.get(0).length; i++)
-            availableYears.add(Integer.parseInt(csv.get(0)[i].substring(1, csv.get(0)[i].length() - 1)));
+        for (int j = 2; j < csv.get(0).length; j++)
+            availableYears.add(Integer.parseInt(csv.get(0)[j].substring(1, csv.get(0)[j].length() - 1)));
     }
 
     /**
@@ -77,5 +77,27 @@ public class DataLoader {
      */
     public ArrayList<LatLonPair> getKnownLocations() {
         return knownLocations;
+    }
+
+    /**
+     * Get all temperatures anomaly in the world according to a specific year.
+     * @param year Specific wanted year.
+     * @return ArrayList<Float> containing all values.
+     */
+    public ArrayList<Float> getAllTempAnomalyForYear(int year) {
+        int yearIndex = 2; // By default indexYear is 2 (corresponding to year 1880)
+        for (int j = 2; j < csv.get(0).length; j++)
+            if (csv.get(0)[j].substring(1, csv.get(0)[j].length() - 1).equals(year)) {
+                yearIndex = j;
+                break;
+            }
+
+        ArrayList<Float> out = new ArrayList<>();
+        for (int i = 1; i < csv.size(); i++) {
+            if (csv.get(i)[yearIndex].equals("NA")) out.add(Float.parseFloat("NaN")); // If val is not present, we put a NaN
+            else out.add(Float.parseFloat(csv.get(i)[yearIndex]));
+        }
+
+        return out;
     }
 }
