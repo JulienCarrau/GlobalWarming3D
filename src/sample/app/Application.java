@@ -11,6 +11,10 @@ public class Application {
     private ArrayList<LatLonPair> knownLocations;
     private float globalMin, globalMax;
 
+    /**
+     * Functionality: Parser le fichier .csv et stocker les données dans une structure de données appropriée.
+     * @param CSVName CSV filename.
+     */
     public Application(String CSVName) {
         dataLoader = new DataLoader(CSVName);
         knownLocations = dataLoader.getKnownLocations();
@@ -53,6 +57,7 @@ public class Application {
     }
 
     /**
+     * Functionality: Récupérer la valeur minimum et la valeur maximum des anomalies de temperature parmi toutes les valeurs présentes dans le fichier.
      * Get global maximal and minimal temperature anomaly through all available data.
      * @return ArrayList<Float> which size is 2 and where index 0 is min and index 1 is max.
      */
@@ -64,6 +69,7 @@ public class Application {
     }
 
     /**
+     * Functionality: Récupérer dans le fichier .csv la liste des années pour lesquelles des données sont disponibles (sur la première ligne du fichier).
      * Available years getter.
      * @return ArrayList<Integer>
      */
@@ -72,6 +78,7 @@ public class Application {
     }
 
     /**
+     * Functionality: Récupérer la liste de toutes zones connues avec leur latitude et leur longitude.
      * Known locations getter.
      * @return ArrayList<LatLonPair>
      */
@@ -80,6 +87,7 @@ public class Application {
     }
 
     /**
+     * Functionality: Récupérer la valeur de l’anomalie de temperature pour une zone donnée à une année donnée.
      * Get a temperature anomaly for a specific location in the world and at a certain given year.
      * @param year Wanted year.
      * @param lat Latitude value.
@@ -91,6 +99,7 @@ public class Application {
     }
 
     /**
+     * Functionality: Récupérer les valeurs des anomalies de température pour toutes les années pour une zone donnée. (dans l’ordre croissant des années)
      * Get all temperatures anomaly for a specific location.
      * @param lat Latitude value.
      * @param lon Longitude value.
@@ -104,6 +113,7 @@ public class Application {
     }
 
     /**
+     * Functionality: Récupérer de façon optimisé les valeurs des anomalies de température de toutes les zones pour une année donnée (les zones doivent être dans l’ordre de lecture du fichier).
      * Get all temperatures anomaly in the world according to a specific year.
      * @param year Specific wanted year.
      * @return ArrayList<Float> containing all values.

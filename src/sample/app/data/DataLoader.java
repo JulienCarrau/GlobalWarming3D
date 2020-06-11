@@ -12,6 +12,10 @@ public class DataLoader {
     private ArrayList<Integer> availableYears;
     private ArrayList<LatLonPair> knownLocations;
 
+    /**
+     * Class' constructor.
+     * @param CSVName CSV filename.
+     */
     public DataLoader(String CSVName) {
         loadCSV(CSVName);
         setAvailableYears();
