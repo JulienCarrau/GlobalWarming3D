@@ -1,11 +1,7 @@
 package sample.gui.objects;
 
-import javafx.event.EventHandler;
 import javafx.scene.*;
 import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.input.ScrollEvent;
 import javafx.scene.transform.Rotate;
 
 public class CameraManager {

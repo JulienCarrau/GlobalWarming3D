@@ -34,13 +34,11 @@ public class Earth {
         root3D.getChildren().add(earth);
 
         // Draw a line
-
-        // Draw an helix
+        //root3D.getChildren().add(createLine(geoCoordTo3dCoord(48.447911, -4.418539), geoCoordTo3dCoord(43.435555, 5.213611)));
 
         // Draw city on the earth
-        displayTown(root3D, "Brest", 48.447911, -4.418539);
-        displayTown(root3D, "Marseille", 43.435555, 5.213611);
-        //root3D.getChildren().add(createLine(geoCoordTo3dCoord(48.447911, -4.418539), geoCoordTo3dCoord(43.435555, 5.213611)));
+        //displayTown(root3D, "Brest", 48.447911, -4.418539);
+        //displayTown(root3D, "Marseille", 43.435555, 5.213611);
 
         //addFilterOverWorld(root3D);
 
