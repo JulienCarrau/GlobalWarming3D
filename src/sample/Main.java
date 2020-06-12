@@ -21,10 +21,16 @@ public class Main extends Application {
         this.controller = fxmlLoader.getController();
         this.app = new App("src/sample/app/data/tempanomaly_4x4grid.csv");
 
+        setupLinksBetweenAppAndController();
+
         primaryStage.setTitle("GlobalWarming3D");
         primaryStage.setScene(new Scene(root, 1000, 800));
         primaryStage.setResizable(false);
         primaryStage.show();
+    }
+
+    private void setupLinksBetweenAppAndController() {
+        controller.test(String.valueOf(app.getYearTempAnomalyAtLatLon(1881, 12, 154)));
     }
 
     public static void main(String[] args) {
