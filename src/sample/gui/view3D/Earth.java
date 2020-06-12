@@ -10,7 +10,6 @@ import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.*;
 import sample.app.LatLonPair;
 import sample.app.YearTempAnomaly;
-import sample.gui.view2D.legend.Legend;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -18,7 +17,8 @@ import java.util.ArrayList;
 public class Earth implements IEarth {
     private Group root3D;
     private ArrayList<PhongMaterial> colorGradient; // Index 0 is blue and index 11 is red
-    private Legend legend;
+    private ArrayList<Color> colors;
+    private float colorStep, minGlobalTempAnomaly; // Correspond to how much a temperature needs to vary to change color
 
     private static final double TEXTURE_LAT_OFFSET = -0.2f;
     private static final double TEXTURE_LON_OFFSET = 2.8f;
@@ -55,7 +55,6 @@ public class Earth implements IEarth {
         scene.setCamera(camera);
         pane3D.getChildren().add(scene);
 
-        legend = new Legend(pane3D);
         setColorGradient();
     }
 
@@ -66,7 +65,7 @@ public class Earth implements IEarth {
         colorGradient = new ArrayList<>();
         PhongMaterial material;
 
-        ArrayList<Color> colors = new ArrayList<>(); // All 12 colors
+        colors = new ArrayList<>(); // All 12 colors
         colors.add(new Color(0, 0, 1, 0.05));
         colors.add(new Color(0.12, 0.12, 1, 0.05));
         colors.add(new Color(0.29, 0.29, 1, 0.05));
@@ -79,8 +78,6 @@ public class Earth implements IEarth {
         colors.add(new Color(1, 0.38, 0.01, 0.05));
         colors.add(new Color(1, 0.17, 0.02, 0.05));
         colors.add(new Color(0.94, 0.02, 0.02, 0.05));
-
-        legend.setRectanglesWithColors(colors);
 
         for (int i = 0; i < 12; i++) {
             material = new PhongMaterial();
@@ -115,12 +112,24 @@ public class Earth implements IEarth {
      */
     @Override
     public void addQuadrilateralFilterOverWorld(ArrayList<LatLonPair> locations, YearTempAnomaly anomaly) {
-        float step = (anomaly.getMaxTempAnomaly() - anomaly.getMinTempAnomaly()) / 11;
-
         for (LatLonPair pair : locations)
-            addQuadrilateralFromCenterAndAngle(pair.getLat(), pair.getLon(), 4, colorGradient.get((int) ((anomaly.getLocalTempAnomaly(pair.getLat(), pair.getLon()) - anomaly.getMinTempAnomaly()) / step)));
+            addQuadrilateralFromCenterAndAngle(pair.getLat(), pair.getLon(), 4, colorGradient.get((int) ((anomaly.getLocalTempAnomaly(pair.getLat(), pair.getLon()) - minGlobalTempAnomaly) / colorStep)));
+    }
 
-        legend.updateLegendMinAndMax(anomaly.getMinTempAnomaly(), anomaly.getMaxTempAnomaly());
+    /**
+     * Set color step (amount of °C to change color) and set min and max temperatures labels in legend.
+     * @param minTemp Minimal temperature anomaly.
+     * @param maxTemp Maximal temperature anomaly.
+     */
+    @Override
+    public void setColorStep(float minTemp, float maxTemp) {
+        minGlobalTempAnomaly = minTemp;
+        colorStep = (maxTemp - minTemp) / 11;
+    }
+
+    @Override
+    public ArrayList<Color> getColors() {
+        return colors;
     }
 
     /**

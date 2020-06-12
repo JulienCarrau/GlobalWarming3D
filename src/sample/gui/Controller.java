@@ -6,8 +6,10 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.layout.Pane;
+import sample.app.App;
 import sample.app.LatLonPair;
 import sample.app.YearTempAnomaly;
+import sample.gui.view2D.legend.Legend;
 import sample.gui.view3D.Earth;
 
 import java.net.URL;
@@ -28,20 +30,30 @@ public class Controller implements Initializable {
     private Slider yearSlider;
 
     private Earth earth;
+    private Legend legend;
     private int currentYear;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        currentYear = 1980;
+        currentYear = 1880;
         earth = new Earth(pane3D);
     }
 
     /**
-     * Draw a quadrilateral map over the earth showing temperatures anomaly.
-     * @param locations List of known locations.
-     * @param anomaly Temperature anomaly of this year.
+     * 2nd initializer but this time it has access to the model.
+     * @param app Application model.
      */
-    public void setQuadrilateralFliter(ArrayList<LatLonPair> locations, YearTempAnomaly anomaly) {
-        earth.addQuadrilateralFilterOverWorld(locations, anomaly);
+    public void linkModelAndController(App app) {
+        legend = new Legend(pane3D, app.getGlobalMinAndMax().get(0), app.getGlobalMinAndMax().get(1), earth.getColors());
+        setEarthColorStep(app.getGlobalMinAndMax());
+        earth.addQuadrilateralFilterOverWorld(app.getKnownLocations(), app.getYearTempAnomaly(currentYear));
+    }
+
+    /**
+     * Set earth's color step and legend minimal and maximal values.
+     * @param minAndMax Minimal and maximal temperature anomaly values.
+     */
+    public void setEarthColorStep(ArrayList<Float> minAndMax) {
+        earth.setColorStep(minAndMax.get(0), minAndMax.get(1));
     }
 }

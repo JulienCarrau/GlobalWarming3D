@@ -8,15 +8,18 @@ import javafx.scene.text.Text;
 
 import java.util.ArrayList;
 
-public class Legend implements ILegend {
+public class Legend {
     private Group root2D;
     private Text minText, maxText;
 
     /**
      * Legend's constructor.
      * @param pane2D Pane where we store legend.
+     * @param min Minimal temperature anomaly.
+     * @param max Maximal temperature anomaly.
+     * @param colors ArrayList of all colors present in legend.
      */
-    public Legend(Pane pane2D) {
+    public Legend(Pane pane2D, float min, float max, ArrayList<Color> colors) {
         root2D = new Group();
 
         SubScene scene = new SubScene(root2D, 60, 220);
@@ -24,8 +27,10 @@ public class Legend implements ILegend {
         scene.setLayoutY(207);
         pane2D.getChildren().add(scene);
 
-        setMin(0);
-        setMax(0);
+        setMin(min);
+        setMax(max);
+
+        setRectanglesWithColors(colors);
     }
 
     /**
@@ -54,8 +59,7 @@ public class Legend implements ILegend {
      * Set legend gradient colors view.
      * @param colors List of displayed colors.
      */
-    @Override
-    public void setRectanglesWithColors(ArrayList<Color> colors) {
+    private void setRectanglesWithColors(ArrayList<Color> colors) {
         double i = 0;
         for (Color c : colors) {
             Rectangle r = new Rectangle(15, 15, new Color(c.getRed(), c.getGreen(), c.getBlue(), 1));
@@ -64,18 +68,5 @@ public class Legend implements ILegend {
             i += 15;
             root2D.getChildren().add(r);
         }
-    }
-
-    /**
-     * Delete min and max texts and replace them by new ones with the right values.
-     * @param min New minimal temperature value.
-     * @param max New maximal temperature value.
-     */
-    @Override
-    public void updateLegendMinAndMax(float min, float max) {
-        root2D.getChildren().remove(minText);
-        setMin(min);
-        root2D.getChildren().remove(maxText);
-        setMax(max);
     }
 }
