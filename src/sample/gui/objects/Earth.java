@@ -40,7 +40,7 @@ public class Earth {
         //displayTown(root3D, "Brest", 48.447911, -4.418539);
         //displayTown(root3D, "Marseille", 43.435555, 5.213611);
 
-        //addFilterOverWorld(root3D);
+        addFilterOverWorld(root3D);
 
         // Add a camera group
         PerspectiveCamera camera = new PerspectiveCamera(true);
@@ -115,20 +115,21 @@ public class Earth {
 
     private void addFilterOverWorld(Group parent) {
         PhongMaterial blue = new PhongMaterial();
-        blue.setDiffuseColor(new Color(0, 0, 1, 0.05));
-        blue.setSpecularColor(new Color(0, 0, 1, 0.05));
+        blue.setDiffuseColor(new Color(0, 0, 0.2, 0.05));
+        blue.setSpecularColor(new Color(0, 0, 0.2, 0.05));
 
         PhongMaterial red = new PhongMaterial();
-        red.setDiffuseColor(new Color(1, 0, 0, 0.05));
-        red.setSpecularColor(new Color(1, 0, 0, 0.05));
+        red.setDiffuseColor(new Color(0.2, 0, 0, 0.05));
+        red.setSpecularColor(new Color(0.2, 0, 0, 0.05));
 
         boolean redOrBlue = true;
-        for (int i = -90; i <= 90; i+=10) {
-            for (int j = -180; j <= 180; j+=10) {
-                if (redOrBlue) addQuadrilateralFromCenterAndAngle(parent, i, j, 10, red);
-                else addQuadrilateralFromCenterAndAngle(parent, i, j, 10, blue);
+        for (int i = -90; i <= 90; i+=4) {
+            for (int j = -180; j < 180; j+=4) {
+                if (redOrBlue) addQuadrilateralFromCenterAndAngle(parent, i, j, 4, red);
+                else addQuadrilateralFromCenterAndAngle(parent, i, j, 4, blue);
                 redOrBlue = !redOrBlue;
             }
+            redOrBlue = !redOrBlue;
         }
     }
 
