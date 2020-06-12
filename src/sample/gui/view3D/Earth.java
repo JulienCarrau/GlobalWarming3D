@@ -106,6 +106,7 @@ public class Earth implements IEarth {
     }
 
     /**
+     * Fonctionality: Afficher toutes les valeurs des anomalies de température d’une année donnée sur le globe sous forme quadrilatère de couleur (vous pourrez vous aider du tutoriel réalisé à la première séance). Vous devrez faire en sorte que la couleur chance en fonction de la valeur de l’anomalie pour chacune des zones (en utilisant, par exemple, un dégradé de couleur allant du bleu au rouge). Afficher une légende indiquant les températures minimales et maximale ainsi que les couleurs associées.
      * Draw a quadrilateral map over the earth showing temperatures anomaly.
      * @param locations List of known locations.
      * @param anomaly Temperature anomaly of this year.

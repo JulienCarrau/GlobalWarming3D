@@ -39,7 +39,7 @@ public class Controller implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         currentYear = 1880;
-        earth = new Earth(pane3D);
+        earth = new Earth(pane3D); // Fonctionality: Afficher un globe en 3D et permettre à l’utilisateur tourner autour grâce à la souris.
     }
 
     /**
