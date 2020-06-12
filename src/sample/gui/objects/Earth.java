@@ -8,13 +8,15 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.*;
-import javafx.scene.transform.Rotate;
-import javafx.scene.transform.Translate;
+import sample.app.LatLonPair;
+import sample.app.YearTempAnomaly;
 
 import java.net.URL;
+import java.util.ArrayList;
 
 public class Earth {
     private Group root3D;
+    private ArrayList<PhongMaterial> colorGradient; // Index 0 is blue and index 11 is red.
 
     private static final double TEXTURE_LAT_OFFSET = -0.2f;
     private static final double TEXTURE_LON_OFFSET = 2.8f;
@@ -50,6 +52,38 @@ public class Earth {
         SubScene scene = new SubScene(root3D, 1000, 634, true, SceneAntialiasing.BALANCED);
         scene.setCamera(camera);
         pane3D.getChildren().add(scene);
+
+        setColorGradient();
+    }
+
+    /**
+     * Initialize color panel for gradient phong materials colors.
+     */
+    private void setColorGradient() {
+        colorGradient = new ArrayList<>();
+        PhongMaterial material;
+
+        ArrayList<Color> colors = new ArrayList<>(); // All 12 colors
+        colors.add(new Color(0, 0, 1, 0.05));
+        colors.add(new Color(0.12, 0.12, 1, 0.05));
+        colors.add(new Color(0.29, 0.29, 1, 0.05));
+        colors.add(new Color(0.47, 0.47, 1, 0.05));
+        colors.add(new Color(0.64, 0.64, 1, 0.05));
+        colors.add(new Color(0.75, 0.75, 1, 0.05));
+        colors.add(new Color(1, 0.94, 0, 0.05));
+        colors.add(new Color(1, 0.81, 0, 0.05));
+        colors.add(new Color(1, 0.6, 0, 0.05));
+        colors.add(new Color(1, 0.38, 0.01, 0.05));
+        colors.add(new Color(1, 0.17, 0.02, 0.05));
+        colors.add(new Color(0.94, 0.02, 0.02, 0.05));
+
+
+        for (int i = 0; i < 12; i++) {
+            material = new PhongMaterial();
+            material.setSpecularColor(colors.get(i));
+            material.setDiffuseColor(colors.get(i));
+            colorGradient.add(material);
+        }
     }
 
     /*
@@ -111,24 +145,17 @@ public class Earth {
                         * java.lang.Math.cos(java.lang.Math.toRadians(lat_cor)) * radium);
     }
 
+    /**
+     * Draw a quadrilateral map over the earth showing temperatures anomaly.
+     * @param locations List of known locations.
+     * @param anomaly Temperature anomaly of this year.
+     */
+    public void addQuadrilateralFilterOverWorld(ArrayList<LatLonPair> locations, YearTempAnomaly anomaly) {
+        float step = (anomaly.getMaxTempAnomaly() - anomaly.getMinTempAnomaly()) / 11;
 
-    private void addFilterOverWorld() {
-        PhongMaterial blue = new PhongMaterial();
-        blue.setDiffuseColor(new Color(0, 0, 0.2, 0.05));
-        blue.setSpecularColor(new Color(0, 0, 0.2, 0.05));
-
-        PhongMaterial red = new PhongMaterial();
-        red.setDiffuseColor(new Color(0.2, 0, 0, 0.05));
-        red.setSpecularColor(new Color(0.2, 0, 0, 0.05));
-
-        boolean redOrBlue = true;
-        for (int i = -90; i <= 90; i+=4) {
-            for (int j = -180; j < 180; j+=4) {
-                if (redOrBlue) addQuadrilateralFromCenterAndAngle(i, j, 4, red);
-                else addQuadrilateralFromCenterAndAngle(i, j, 4, blue);
-                redOrBlue = !redOrBlue;
-            }
-            redOrBlue = !redOrBlue;
+        for (LatLonPair pair : locations) {
+            System.out.println("Temp : " + anomaly.getLocalTempAnomaly(pair.getLat(), pair.getLon()) + " index : " + (int) ((anomaly.getLocalTempAnomaly(pair.getLat(), pair.getLon()) - anomaly.getMinTempAnomaly()) / step));
+            addQuadrilateralFromCenterAndAngle(pair.getLat(), pair.getLon(), 4, colorGradient.get(11 - (int) ((anomaly.getLocalTempAnomaly(pair.getLat(), pair.getLon()) - anomaly.getMinTempAnomaly()) / step)));
         }
     }
 

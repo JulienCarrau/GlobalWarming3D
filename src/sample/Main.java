@@ -30,7 +30,7 @@ public class Main extends Application {
     }
 
     private void setupLinksBetweenAppAndController() {
-        controller.test(String.valueOf(app.getYearTempAnomalyAtLatLon(1881, 12, 154)));
+        controller.setQuadrilateralFliter(app.getKnownLocations(), app.getYearTempAnomaly(1980));
     }
 
     public static void main(String[] args) {
