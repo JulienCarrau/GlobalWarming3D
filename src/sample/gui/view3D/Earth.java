@@ -1,4 +1,4 @@
-package sample.gui.objects3D;
+package sample.gui.view3D;
 
 import com.interactivemesh.jfx.importer.ImportException;
 import com.interactivemesh.jfx.importer.obj.ObjModelImporter;
@@ -10,7 +10,7 @@ import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.*;
 import sample.app.LatLonPair;
 import sample.app.YearTempAnomaly;
-import sample.gui.objects2D.legend.Legend;
+import sample.gui.view2D.legend.Legend;
 
 import java.net.URL;
 import java.util.ArrayList;

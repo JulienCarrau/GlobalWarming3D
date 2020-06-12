@@ -1,4 +1,4 @@
-package sample.gui.objects2D.legend;
+package sample.gui.view2D.legend;
 
 import javafx.scene.paint.Color;
 

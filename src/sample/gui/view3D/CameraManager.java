@@ -1,4 +1,4 @@
-package sample.gui.objects3D;
+package sample.gui.view3D;
 
 import javafx.scene.*;
 import javafx.scene.input.KeyCode;

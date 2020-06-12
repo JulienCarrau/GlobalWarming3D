@@ -8,7 +8,7 @@ import javafx.scene.control.Slider;
 import javafx.scene.layout.Pane;
 import sample.app.LatLonPair;
 import sample.app.YearTempAnomaly;
-import sample.gui.objects3D.Earth;
+import sample.gui.view3D.Earth;
 
 import java.net.URL;
 import java.util.ArrayList;
