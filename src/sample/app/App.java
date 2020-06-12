@@ -5,7 +5,7 @@ import sample.app.data.DataLoader;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class Application {
+public class App {
     private DataLoader dataLoader;
     private HashMap<Integer, YearTempAnomaly> allTempAnomaly;
     private ArrayList<LatLonPair> knownLocations;
@@ -15,7 +15,7 @@ public class Application {
      * Functionality: Parser le fichier .csv et stocker les données dans une structure de données appropriée.
      * @param CSVName CSV filename.
      */
-    public Application(String CSVName) {
+    public App(String CSVName) {
         dataLoader = new DataLoader(CSVName);
         knownLocations = dataLoader.getKnownLocations();
         setAllTempAnomaly();

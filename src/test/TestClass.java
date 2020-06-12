@@ -4,19 +4,19 @@ import static org.junit.Assert.*;
 
 import org.junit.Before;
 import org.junit.Test;
-import sample.app.Application;
+import sample.app.App;
 
 import java.util.List;
 
 
 public class TestClass {
-	private Application app;
+	private App app;
 	private float delta = 0.00001f;
 
 	@Before
 	public void setUp() {
 		//Exemple
-		app = new Application("src/sample/app/data/tempanomaly_4x4grid.csv");
+		app = new App("src/sample/app/data/tempanomaly_4x4grid.csv");
 		assertNotEquals(app, null);
 	}
 
