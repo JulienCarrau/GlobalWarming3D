@@ -29,6 +29,8 @@ public class Controller implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         earth = new Earth(pane3D);
+
+
     }
 
     public void test(String t) {

@@ -14,12 +14,17 @@ import javafx.scene.transform.Translate;
 import java.net.URL;
 
 public class Earth {
+    private Group root3D;
+
     private static final double TEXTURE_LAT_OFFSET = -0.2f;
     private static final double TEXTURE_LON_OFFSET = 2.8f;
 
+    /**
+     * Earth constructor. 3D representation of earth.
+     * @param pane3D Pane where we want to draw earth into.
+     */
     public Earth(Pane pane3D) {
-        //Create a Pane et graph scene root for the 3D content
-        Group root3D = new Group();
+        root3D = new Group();
 
         // Load geometry
         ObjModelImporter objImporter = new ObjModelImporter();
@@ -30,29 +35,12 @@ public class Earth {
             System.out.println(i.getMessage());
         }
         MeshView[] meshViews = objImporter.getImport();
-        Group earth = new Group(meshViews);
-        root3D.getChildren().add(earth);
 
-        // Draw a line
-        //root3D.getChildren().add(createLine(geoCoordTo3dCoord(48.447911, -4.418539), geoCoordTo3dCoord(43.435555, 5.213611)));
-
-        // Draw city on the earth
-        //displayTown(root3D, "Brest", 48.447911, -4.418539);
-        //displayTown(root3D, "Marseille", 43.435555, 5.213611);
-
-        addFilterOverWorld(root3D);
+        root3D.getChildren().add(new Group(meshViews));
 
         // Add a camera group
         PerspectiveCamera camera = new PerspectiveCamera(true);
         new CameraManager(camera, pane3D, root3D);
-
-        // Add point light
-        PointLight light = new PointLight(Color.WHITE);
-        light.setTranslateX(-180);
-        light.setTranslateY(-90);
-        light.setTranslateZ(-120);
-        light.getScope().addAll(root3D);
-        root3D.getChildren().add(light);
 
         // Add ambient light
         AmbientLight ambientLight = new AmbientLight(Color.WHITE);
@@ -64,7 +52,10 @@ public class Earth {
         pane3D.getChildren().add(scene);
     }
 
-    public void displayTown(Group parent, String name, double lat, double lon) {
+    /*
+    //earth.displayTown("Brest", 48.447911, -4.418539);
+    //earth.displayTown("Marseille", 43.435555, 5.213611);
+    public void displayTown(String name, double lat, double lon) {
         final PhongMaterial greenMaterial = new PhongMaterial();
         greenMaterial.setDiffuseColor(Color.GREEN);
         greenMaterial.setSpecularColor(Color.GREEN);
@@ -79,10 +70,10 @@ public class Earth {
         pins.setTranslateY(position.getY());
         pins.setTranslateZ(position.getZ());
 
-        parent.getChildren().add(pins);
-    }
+        root3D.getChildren().add(pins);
+    }*/
 
-    // From Rahel LÃ¼thy : https://netzwerg.ch/blog/2015/03/22/javafx-3d-line/
+    /* From Rahel LÃ¼thy : https://netzwerg.ch/blog/2015/03/22/javafx-3d-line/
     public Cylinder createLine(Point3D origin, Point3D target) {
         Point3D yAxis = new Point3D(0, 1, 0);
         Point3D diff = target.subtract(origin);
@@ -100,20 +91,28 @@ public class Earth {
         line.getTransforms().addAll(moveToMidpoint, rotateAroundCenter);
 
         return line;
-    }
+    }*/
 
-    public static Point3D geoCoordTo3dCoord(double lat, double lon, double rayon) {
+    /**
+     * Get a 3D point according to a latitude, longitude and a shpere radium.
+     * @param lat Latitude value.
+     * @param lon Longitude value.
+     * @param radium Sphere's radium.
+     * @return Point3D corresponding to a 3D location in space.
+     */
+    private Point3D geoCoordTo3dCoord(double lat, double lon, double radium) {
         double lat_cor = lat + TEXTURE_LAT_OFFSET;
         double lon_cor = lon + TEXTURE_LON_OFFSET;
         return new Point3D(
                 -java.lang.Math.sin(java.lang.Math.toRadians(lon_cor))
-                        * java.lang.Math.cos(java.lang.Math.toRadians(lat_cor)) * rayon,
-                -java.lang.Math.sin(java.lang.Math.toRadians(lat_cor)) * rayon,
+                        * java.lang.Math.cos(java.lang.Math.toRadians(lat_cor)) * radium,
+                -java.lang.Math.sin(java.lang.Math.toRadians(lat_cor)) * radium,
                 java.lang.Math.cos(java.lang.Math.toRadians(lon_cor))
-                        * java.lang.Math.cos(java.lang.Math.toRadians(lat_cor)) * rayon);
+                        * java.lang.Math.cos(java.lang.Math.toRadians(lat_cor)) * radium);
     }
 
-    private void addFilterOverWorld(Group parent) {
+
+    private void addFilterOverWorld() {
         PhongMaterial blue = new PhongMaterial();
         blue.setDiffuseColor(new Color(0, 0, 0.2, 0.05));
         blue.setSpecularColor(new Color(0, 0, 0.2, 0.05));
@@ -125,15 +124,22 @@ public class Earth {
         boolean redOrBlue = true;
         for (int i = -90; i <= 90; i+=4) {
             for (int j = -180; j < 180; j+=4) {
-                if (redOrBlue) addQuadrilateralFromCenterAndAngle(parent, i, j, 4, red);
-                else addQuadrilateralFromCenterAndAngle(parent, i, j, 4, blue);
+                if (redOrBlue) addQuadrilateralFromCenterAndAngle(i, j, 4, red);
+                else addQuadrilateralFromCenterAndAngle(i, j, 4, blue);
                 redOrBlue = !redOrBlue;
             }
             redOrBlue = !redOrBlue;
         }
     }
 
-    private void addQuadrilateralFromCenterAndAngle(Group parent, float lat, float lon, float angle, PhongMaterial material) {
+    /**
+     * Draw a quadrilateral over earth centered at lat and lon, its width equals angle parameter.
+     * @param lat Latitude value.
+     * @param lon Longitude value.
+     * @param angle Angle (quadrilateral's width).
+     * @param material Desired material for this quadrilateral.
+     */
+    private void addQuadrilateralFromCenterAndAngle(float lat, float lon, float angle, PhongMaterial material) {
         Point3D topRight, bottomRight, topLeft, bottomLeft;
 
         topRight = geoCoordTo3dCoord(lat - angle/2, lon + angle/2, 1.01);
@@ -141,10 +147,18 @@ public class Earth {
         topLeft = geoCoordTo3dCoord(lat + angle/2, lon + angle/2, 1.01);
         bottomLeft = geoCoordTo3dCoord(lat + angle/2, lon - angle/2, 1.01);
 
-        addQuadrilateral(parent, topRight, bottomRight, topLeft, bottomLeft, material);
+        addQuadrilateral(topRight, bottomRight, topLeft, bottomLeft, material);
     }
 
-    private void addQuadrilateral(Group parent, Point3D topRight, Point3D bottomRight, Point3D topLeft, Point3D bottomLeft, PhongMaterial material) {
+    /**
+     * Draw a quadrilateral over earth according to its corners and a material.
+     * @param topRight Top Right quadrilateral's corner.
+     * @param bottomRight Bottom Right quadrilateral's corner.
+     * @param topLeft Top Left quadrilateral's corner.
+     * @param bottomLeft Bottom Left quadrilateral's corner.
+     * @param material Desired material for this quadrilateral.
+     */
+    private void addQuadrilateral(Point3D topRight, Point3D bottomRight, Point3D topLeft, Point3D bottomLeft, PhongMaterial material) {
         final TriangleMesh triangleMesh = new TriangleMesh();
 
         final float[] points = {
@@ -185,6 +199,6 @@ public class Earth {
 
         final MeshView meshView = new MeshView(triangleMesh);
         meshView.setMaterial(material);
-        parent.getChildren().add(meshView);
+        root3D.getChildren().add(meshView);
     }
 }
