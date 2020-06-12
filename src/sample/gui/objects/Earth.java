@@ -14,7 +14,7 @@ import sample.app.YearTempAnomaly;
 import java.net.URL;
 import java.util.ArrayList;
 
-public class Earth {
+public class Earth implements IEarth {
     private Group root3D;
     private ArrayList<PhongMaterial> colorGradient; // Index 0 is blue and index 11 is red.
 
@@ -86,47 +86,6 @@ public class Earth {
         }
     }
 
-    /*
-    //earth.displayTown("Brest", 48.447911, -4.418539);
-    //earth.displayTown("Marseille", 43.435555, 5.213611);
-    public void displayTown(String name, double lat, double lon) {
-        final PhongMaterial greenMaterial = new PhongMaterial();
-        greenMaterial.setDiffuseColor(Color.GREEN);
-        greenMaterial.setSpecularColor(Color.GREEN);
-
-        Sphere pins = new Sphere(0.01);
-        pins.setId(name);
-        pins.setMaterial(greenMaterial);
-
-        Point3D position = geoCoordTo3dCoord(lat, lon, 1);
-
-        pins.setTranslateX(position.getX());
-        pins.setTranslateY(position.getY());
-        pins.setTranslateZ(position.getZ());
-
-        root3D.getChildren().add(pins);
-    }*/
-
-    /* From Rahel LÃ¼thy : https://netzwerg.ch/blog/2015/03/22/javafx-3d-line/
-    public Cylinder createLine(Point3D origin, Point3D target) {
-        Point3D yAxis = new Point3D(0, 1, 0);
-        Point3D diff = target.subtract(origin);
-        double height = diff.magnitude();
-
-        Point3D mid = target.midpoint(origin);
-        Translate moveToMidpoint = new Translate(mid.getX(), mid.getY(), mid.getZ());
-
-        Point3D axisOfRotation = diff.crossProduct(yAxis);
-        double angle = Math.acos(diff.normalize().dotProduct(yAxis));
-        Rotate rotateAroundCenter = new Rotate(-Math.toDegrees(angle), axisOfRotation);
-
-        Cylinder line = new Cylinder(0.01f, height);
-
-        line.getTransforms().addAll(moveToMidpoint, rotateAroundCenter);
-
-        return line;
-    }*/
-
     /**
      * Get a 3D point according to a latitude, longitude and a shpere radium.
      * @param lat Latitude value.
@@ -150,6 +109,7 @@ public class Earth {
      * @param locations List of known locations.
      * @param anomaly Temperature anomaly of this year.
      */
+    @Override
     public void addQuadrilateralFilterOverWorld(ArrayList<LatLonPair> locations, YearTempAnomaly anomaly) {
         float step = (anomaly.getMaxTempAnomaly() - anomaly.getMinTempAnomaly()) / 11;
 
@@ -229,3 +189,44 @@ public class Earth {
         root3D.getChildren().add(meshView);
     }
 }
+
+/*
+    //earth.displayTown("Brest", 48.447911, -4.418539);
+    //earth.displayTown("Marseille", 43.435555, 5.213611);
+    public void displayTown(String name, double lat, double lon) {
+        final PhongMaterial greenMaterial = new PhongMaterial();
+        greenMaterial.setDiffuseColor(Color.GREEN);
+        greenMaterial.setSpecularColor(Color.GREEN);
+
+        Sphere pins = new Sphere(0.01);
+        pins.setId(name);
+        pins.setMaterial(greenMaterial);
+
+        Point3D position = geoCoordTo3dCoord(lat, lon, 1);
+
+        pins.setTranslateX(position.getX());
+        pins.setTranslateY(position.getY());
+        pins.setTranslateZ(position.getZ());
+
+        root3D.getChildren().add(pins);
+    }*/
+
+    /* From Rahel LÃ¼thy : https://netzwerg.ch/blog/2015/03/22/javafx-3d-line/
+    public Cylinder createLine(Point3D origin, Point3D target) {
+        Point3D yAxis = new Point3D(0, 1, 0);
+        Point3D diff = target.subtract(origin);
+        double height = diff.magnitude();
+
+        Point3D mid = target.midpoint(origin);
+        Translate moveToMidpoint = new Translate(mid.getX(), mid.getY(), mid.getZ());
+
+        Point3D axisOfRotation = diff.crossProduct(yAxis);
+        double angle = Math.acos(diff.normalize().dotProduct(yAxis));
+        Rotate rotateAroundCenter = new Rotate(-Math.toDegrees(angle), axisOfRotation);
+
+        Cylinder line = new Cylinder(0.01f, height);
+
+        line.getTransforms().addAll(moveToMidpoint, rotateAroundCenter);
+
+        return line;
+    }*/
