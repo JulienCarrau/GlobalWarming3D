@@ -1,4 +1,4 @@
-package sample.gui.objects;
+package sample.gui.objects3D;
 
 import com.interactivemesh.jfx.importer.ImportException;
 import com.interactivemesh.jfx.importer.obj.ObjModelImporter;
@@ -10,19 +10,21 @@ import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.*;
 import sample.app.LatLonPair;
 import sample.app.YearTempAnomaly;
+import sample.gui.objects2D.legend.Legend;
 
 import java.net.URL;
 import java.util.ArrayList;
 
 public class Earth implements IEarth {
     private Group root3D;
-    private ArrayList<PhongMaterial> colorGradient; // Index 0 is blue and index 11 is red.
+    private ArrayList<PhongMaterial> colorGradient; // Index 0 is blue and index 11 is red
+    private Legend legend;
 
     private static final double TEXTURE_LAT_OFFSET = -0.2f;
     private static final double TEXTURE_LON_OFFSET = 2.8f;
 
     /**
-     * Earth constructor. 3D representation of earth.
+     * Earth constructor, 3D representation of earth.
      * @param pane3D Pane where we want to draw earth into.
      */
     public Earth(Pane pane3D) {
@@ -53,6 +55,7 @@ public class Earth implements IEarth {
         scene.setCamera(camera);
         pane3D.getChildren().add(scene);
 
+        legend = new Legend(pane3D);
         setColorGradient();
     }
 
@@ -77,6 +80,7 @@ public class Earth implements IEarth {
         colors.add(new Color(1, 0.17, 0.02, 0.05));
         colors.add(new Color(0.94, 0.02, 0.02, 0.05));
 
+        legend.setRectanglesWithColors(colors);
 
         for (int i = 0; i < 12; i++) {
             material = new PhongMaterial();
@@ -113,10 +117,10 @@ public class Earth implements IEarth {
     public void addQuadrilateralFilterOverWorld(ArrayList<LatLonPair> locations, YearTempAnomaly anomaly) {
         float step = (anomaly.getMaxTempAnomaly() - anomaly.getMinTempAnomaly()) / 11;
 
-        for (LatLonPair pair : locations) {
-            System.out.println("Temp : " + anomaly.getLocalTempAnomaly(pair.getLat(), pair.getLon()) + " index : " + (int) ((anomaly.getLocalTempAnomaly(pair.getLat(), pair.getLon()) - anomaly.getMinTempAnomaly()) / step));
-            addQuadrilateralFromCenterAndAngle(pair.getLat(), pair.getLon(), 4, colorGradient.get(11 - (int) ((anomaly.getLocalTempAnomaly(pair.getLat(), pair.getLon()) - anomaly.getMinTempAnomaly()) / step)));
-        }
+        for (LatLonPair pair : locations)
+            addQuadrilateralFromCenterAndAngle(pair.getLat(), pair.getLon(), 4, colorGradient.get((int) ((anomaly.getLocalTempAnomaly(pair.getLat(), pair.getLon()) - anomaly.getMinTempAnomaly()) / step)));
+
+        legend.updateLegendMinAndMax(anomaly.getMinTempAnomaly(), anomaly.getMaxTempAnomaly());
     }
 
     /**

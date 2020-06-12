@@ -8,7 +8,7 @@ import javafx.scene.control.Slider;
 import javafx.scene.layout.Pane;
 import sample.app.LatLonPair;
 import sample.app.YearTempAnomaly;
-import sample.gui.objects.Earth;
+import sample.gui.objects3D.Earth;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -34,7 +34,6 @@ public class Controller implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         currentYear = 1980;
         earth = new Earth(pane3D);
-
     }
 
     /**

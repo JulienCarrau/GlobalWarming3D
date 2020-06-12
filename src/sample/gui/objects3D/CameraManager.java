@@ -1,4 +1,4 @@
-package sample.gui.objects;
+package sample.gui.objects3D;
 
 import javafx.scene.*;
 import javafx.scene.input.KeyCode;
@@ -6,17 +6,12 @@ import javafx.scene.transform.Rotate;
 
 public class CameraManager {
 
-    private static final double CAMERA_MIN_DISTANCE = -0.5;
     private static final double CAMERA_INITIAL_DISTANCE = -5;
     private static final double CAMERA_INITIAL_X_ANGLE = 0.0;
     private static final double CAMERA_INITIAL_Y_ANGLE = 0.0;
     private static final double CAMERA_NEAR_CLIP = 0.1;
     private static final double CAMERA_FAR_CLIP = 10000.0;
-    private static final double CONTROL_MULTIPLIER = 0.1;
-    private static final double SHIFT_MULTIPLIER = 10.0;
-    private static final double MOUSE_SPEED = 0.05;
     private static final double ROTATION_SPEED = 2.0;
-    private static final double TRACK_SPEED = 0.6;
 
     private final Group cameraXform = new Group();
     private final Group cameraXform2 = new Group();
@@ -32,7 +27,6 @@ public class CameraManager {
     private final Camera camera;
 
     public CameraManager(Camera cam, Node mainRoot, Group root) {
-
         camera = cam;
 
         root.getChildren().add(cameraXform);
@@ -50,12 +44,11 @@ public class CameraManager {
         rx.setAngle(CAMERA_INITIAL_X_ANGLE);
 
         // Add keyboard and mouse handler
-        handleKeyboard(mainRoot);//, root);
-        handleMouse(mainRoot);//, root);
+        handleKeyboard(mainRoot);
+        handleMouse(mainRoot);
     }
 
-    private void handleMouse(Node mainRoot) {//, final Node root) {
-
+    private void handleMouse(Node mainRoot) {
         mainRoot.setOnMousePressed(me -> {
             mousePosX = me.getSceneX();
             mousePosY = me.getSceneY();
@@ -65,6 +58,7 @@ public class CameraManager {
             // Set focus on the mainRoot to be able to detect key press
             mainRoot.requestFocus();
         });
+
         mainRoot.setOnMouseDragged(me -> {
             mouseOldX = mousePosX;
             mouseOldY = mousePosY;
@@ -73,40 +67,12 @@ public class CameraManager {
             mouseDeltaX = (mousePosX - mouseOldX);
             mouseDeltaY = (mousePosY - mouseOldY);
 
-            double modifier = 1.0;
-
-            if (me.isControlDown()) {
-                modifier = CONTROL_MULTIPLIER;
-            }
-            if (me.isShiftDown()) {
-                modifier = SHIFT_MULTIPLIER;
-            }
-            if (me.isPrimaryButtonDown()) {
-                ry.setAngle(ry.getAngle() + mouseDeltaX * modifier * ROTATION_SPEED);
-                rx.setAngle(rx.getAngle() - mouseDeltaY * modifier * ROTATION_SPEED);
-            } else if (me.isSecondaryButtonDown()) {
-                cameraXform2.setTranslateX(cameraXform2.getTranslateX() - mouseDeltaX * MOUSE_SPEED * modifier * TRACK_SPEED);
-                cameraXform2.setTranslateY(cameraXform2.getTranslateY() - mouseDeltaY * MOUSE_SPEED * modifier * TRACK_SPEED);
-            }
-        });
-
-        mainRoot.setOnScroll(event -> {
-            double modifier = 1.0;
-
-            if (event.isControlDown()) {
-                modifier = CONTROL_MULTIPLIER;
-            }
-            if (event.isShiftDown()) {
-                modifier = SHIFT_MULTIPLIER;
-            }
-            double z = camera.getTranslateZ();
-            double newZ = z + event.getDeltaY() * MOUSE_SPEED * modifier;
-            if (newZ > CAMERA_MIN_DISTANCE) newZ = CAMERA_MIN_DISTANCE;
-            camera.setTranslateZ(newZ);
+            ry.setAngle(ry.getAngle() + mouseDeltaX * 0.1 * ROTATION_SPEED);
+            rx.setAngle(rx.getAngle() - mouseDeltaY * 0.1 * ROTATION_SPEED);
         });
     }
 
-    private void handleKeyboard(Node mainRoot) {//, final Node root) {
+    private void handleKeyboard(Node mainRoot) {
         mainRoot.setOnKeyPressed(event -> {
             if (event.getCode() == KeyCode.ALT) {
                 cameraXform2.setTranslateX(0.0);
@@ -119,5 +85,4 @@ public class CameraManager {
             }
         });
     }
-
 }

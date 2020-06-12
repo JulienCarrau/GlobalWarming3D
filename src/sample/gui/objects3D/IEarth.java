@@ -1,4 +1,4 @@
-package sample.gui.objects;
+package sample.gui.objects3D;
 
 import sample.app.LatLonPair;
 import sample.app.YearTempAnomaly;
