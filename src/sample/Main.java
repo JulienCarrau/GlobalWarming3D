@@ -9,8 +9,6 @@ import sample.app.App;
 import sample.gui.Controller;
 
 public class Main extends Application {
-    private App app; // application part of project
-    private Controller controller; // link between view and model (app)
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -18,8 +16,10 @@ public class Main extends Application {
 
         Parent root = fxmlLoader.load();
 
-        this.controller = fxmlLoader.getController();
-        this.app = new App("src/sample/app/data/tempanomaly_4x4grid.csv");
+        // link between view and model (app)
+        Controller controller = fxmlLoader.getController();
+        // application part of project
+        App app = new App("src/sample/app/data/tempanomaly_4x4grid.csv");
 
         controller.linkModelAndController(app);
 

@@ -7,8 +7,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.layout.Pane;
 import sample.app.App;
-import sample.app.LatLonPair;
-import sample.app.YearTempAnomaly;
 import sample.gui.view2D.legend.Legend;
 import sample.gui.view3D.Earth;
 
@@ -33,6 +31,11 @@ public class Controller implements Initializable {
     private Legend legend;
     private int currentYear;
 
+    /**
+     * Initialize everything that doesn't need an access to the model.
+     * @param url URL.
+     * @param resourceBundle ResourceBundle.
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         currentYear = 1880;
