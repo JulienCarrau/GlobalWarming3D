@@ -127,6 +127,10 @@ public class Earth implements IEarth {
         colorStep = (maxTemp - minTemp) / 11;
     }
 
+    /**
+     * Colors getter.
+     * @return ArrayList<Color> containing all temperature colors.
+     */
     @Override
     public ArrayList<Color> getColors() {
         return colors;
