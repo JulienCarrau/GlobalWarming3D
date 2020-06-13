@@ -95,13 +95,6 @@ public class Controller implements Initializable {
             currentYearTempAnomaly = model.getYearTempAnomaly(currentYear);
             showDataOnEarth();
         });
-
-        // I chose on mouse released to prevent lags when thumb is dragged all over the slider, year is actualized only when mouse is released
-        /*yearSlider.setOnMouseReleased(mouseEvent -> {
-            currentYear = 1880 + (int) ((yearSlider.getValue() * 140) / 100); // 140 = 2020 - 1880
-            currentYearTempAnomaly = model.getYearTempAnomaly(currentYear);
-            showDataOnEarth();
-        });*/
     }
 
     /**
