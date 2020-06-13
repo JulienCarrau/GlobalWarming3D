@@ -17,7 +17,9 @@ import java.net.URL;
 import java.util.ArrayList;
 
 public class Earth implements IEarth {
-    private Group root3D, dataGroup;
+    private Group root3D, histogramGroup, quadrilateralGroup; // Groups of 3D shapes
+    private boolean histogramViewEnabled;
+    PhongMaterial transparent = new PhongMaterial(); // Transparent material
     private ArrayList<PhongMaterial> colorGradient; // Index 0 is blue and index 11 is red
     private ArrayList<LatLonPair> knownLocations;
     private ArrayList<Color> colors;
@@ -34,13 +36,18 @@ public class Earth implements IEarth {
      */
     public Earth(Pane pane3D, ArrayList<LatLonPair> knownLocations, ArrayList<Float> globalMinAndMaxTemp) {
         this.knownLocations = knownLocations;
+        histogramViewEnabled = true;
 
         minGlobalTempAnomaly = globalMinAndMaxTemp.get(0);
         maxGlobalTempAnomaly = globalMinAndMaxTemp.get(1);
         colorStep = (maxGlobalTempAnomaly - minGlobalTempAnomaly) / 11;
 
         root3D = new Group();
-        dataGroup = new Group();
+
+        transparent.setDiffuseColor(Color.TRANSPARENT);
+
+        initializeQuadrilateralFilterOverWorld();
+        initializeHistogramFilterOverWorld();
 
         // Load geometry
         ObjModelImporter objImporter = new ObjModelImporter();
@@ -62,9 +69,6 @@ public class Earth implements IEarth {
         AmbientLight ambientLight = new AmbientLight(Color.WHITE);
         ambientLight.getScope().addAll(root3D);
         root3D.getChildren().add(ambientLight);
-
-        // Add dataGroup (for first delete, because ancient datagroup is deleted each time we change or update data)
-        root3D.getChildren().add(dataGroup);
 
         SubScene scene = new SubScene(root3D, 1000, 634, true, SceneAntialiasing.BALANCED);
         scene.setCamera(camera);
@@ -121,28 +125,54 @@ public class Earth implements IEarth {
     }
 
     /**
+     * Initialize quadrilateral group. This group contains all quadrilaterals, they are all transparent at first.
+     */
+    private void initializeQuadrilateralFilterOverWorld() {
+        quadrilateralGroup = new Group();
+
+        for (LatLonPair pair : knownLocations)
+            addQuadrilateralFromCenterAndAngle(pair.getLat(), pair.getLon(), 4, transparent);
+
+        root3D.getChildren().add(quadrilateralGroup);
+    }
+
+    /**
+     * Initialize histogram group. This group contains all histograms, they are all transparent at first.
+     */
+    private void initializeHistogramFilterOverWorld() {
+        histogramGroup = new Group();
+
+        for (LatLonPair pair : knownLocations)
+            addHistogramBarFromCenterAndDiameter(pair.getLat(), pair.getLon(), 0, transparent);
+
+        root3D.getChildren().add(histogramGroup);
+    }
+
+    /**
      * Fonctionality: Afficher toutes les valeurs des anomalies de température d’une année donnée sur le globe sous forme quadrilatère de couleur (vous pourrez vous aider du tutoriel réalisé à la première séance). Vous devrez faire en sorte que la couleur chance en fonction de la valeur de l’anomalie pour chacune des zones (en utilisant, par exemple, un dégradé de couleur allant du bleu au rouge). Afficher une légende indiquant les températures minimales et maximale ainsi que les couleurs associées.
      * Draw a quadrilateral map over the earth showing temperatures anomaly. Quadrilateral's colors may vary according to anomly's temperature.
      * If temperature anomaly is null (NA), it's not drawn.
      * @param anomaly Temperature anomaly of this year.
      */
     @Override
-    public void addQuadrilateralFilterOverWorld(YearTempAnomaly anomaly) {
-        // Delete old dataGroup for replacing it by the new one
-        root3D.getChildren().remove(dataGroup);
-        dataGroup = new Group(); // Reset it
+    public void updateQuadrilateralFilterOverWorld(YearTempAnomaly anomaly) {
+        if (histogramViewEnabled) {
+            root3D.getChildren().remove(histogramGroup);
+            histogramViewEnabled = false;
+            initializeHistogramFilterOverWorld(); // make this filter transparent
+        }
 
         Float temperature;
-        int colorIndex;
+        int i = 0, colorIndex;
         for (LatLonPair pair : knownLocations) {
             temperature = anomaly.getLocalTempAnomaly(pair.getLat(), pair.getLon());
             if (!temperature.equals(Float.NaN)) {
-                colorIndex = (int) ((temperature - minGlobalTempAnomaly) / colorStep);
-                addQuadrilateralFromCenterAndAngle(pair.getLat(), pair.getLon(), 4, colorGradient.get(colorIndex));
-            }
+                colorIndex = (int) ((anomaly.getLocalTempAnomaly(pair.getLat(), pair.getLon()) - minGlobalTempAnomaly) / colorStep);
+                ((MeshView) quadrilateralGroup.getChildren().get(i)).setMaterial(colorGradient.get(colorIndex));
+            } else
+                ((MeshView) quadrilateralGroup.getChildren().get(i)).setMaterial(transparent);
+            i++;
         }
-
-        root3D.getChildren().add(dataGroup);
     }
 
     /**
@@ -152,22 +182,24 @@ public class Earth implements IEarth {
      * @param anomaly Temperature anomaly of this year.
      */
     @Override
-    public void addHistogramFilterOverWorld(YearTempAnomaly anomaly) {
-        // Delete old dataGroup for replacing it by the new one
-        root3D.getChildren().remove(dataGroup);
-        dataGroup = new Group(); // Reset it
+    public void updateHistogramFilterOverWorld(YearTempAnomaly anomaly) {
+        if (!histogramViewEnabled) {
+            root3D.getChildren().remove(quadrilateralGroup);
+            histogramViewEnabled = true;
+            initializeQuadrilateralFilterOverWorld(); // make this filter transparent
+        }
 
         Float temperature;
-        int colorIndex;
+        int i = 0, colorIndex;
         for (LatLonPair pair : knownLocations) {
             temperature = anomaly.getLocalTempAnomaly(pair.getLat(), pair.getLon());
             if (!temperature.equals(Float.NaN) && temperature > 0) {
-                colorIndex = (int) ((temperature - minGlobalTempAnomaly) / colorStep);
-                addHistogramBarFromCenterAndDiameter(pair.getLat(), pair.getLon(), temperature, colorGradient.get(colorIndex));
-            }
+                colorIndex = (int) ((anomaly.getLocalTempAnomaly(pair.getLat(), pair.getLon()) - minGlobalTempAnomaly) / colorStep);
+                updateBar((Cylinder) histogramGroup.getChildren().get(i), pair.getLat(), pair.getLon(), temperature, colorGradient.get(colorIndex));
+            } else
+                ((Cylinder) histogramGroup.getChildren().get(i)).setMaterial(transparent);
+            i++;
         }
-
-        root3D.getChildren().add(dataGroup);
     }
 
     /**
@@ -244,9 +276,9 @@ public class Earth implements IEarth {
         triangleMesh.getTexCoords().setAll(texturesCoords);
         triangleMesh.getFaces().setAll(faces);
 
-        final MeshView meshView = new MeshView(triangleMesh);
+        MeshView meshView = new MeshView(triangleMesh);
         meshView.setMaterial(material);
-        dataGroup.getChildren().add(meshView);
+        quadrilateralGroup.getChildren().add(meshView);
     }
 
     /**
@@ -273,12 +305,12 @@ public class Earth implements IEarth {
         Cylinder bar = createBar(base, top);
         bar.setMaterial(material);
 
-        dataGroup.getChildren().add(bar);
+        histogramGroup.getChildren().add(bar);
     }
 
     /**
      * From Rahel LÃ¼thy : https://netzwerg.ch/blog/2015/03/22/javafx-3d-line/
-     * Draw an cylinder according to a start and an end point. Its radium is 0.01.
+     * Draw a cylinder according to a start and an end point. Its radium is 0.01.
      * @param origin Start point.
      * @param target End point.
      * @return Corresponding cylinder linking start and end points.
@@ -300,6 +332,36 @@ public class Earth implements IEarth {
         bar.getTransforms().addAll(moveToMidpoint, rotateAroundCenter);
 
         return bar;
+    }
+
+    /**
+     * From Rahel LÃ¼thy : https://netzwerg.ch/blog/2015/03/22/javafx-3d-line/
+     * Update a cylinder, update material and height.
+     * @param bar Cylinder to update.
+     * @param lat Latitude value.
+     * @param lon Longitude value.
+     * @param temperature Temperature, correspond to future height.
+     * @param material Desired material for this bar.
+     */
+    private void updateBar(Cylinder bar, float lat, float lon, float temperature, PhongMaterial material) {
+        Point3D origin = geoCoordTo3dCoord(lat, lon, 1);
+        Point3D target = geoCoordTo3dCoord(lat, lon, 1 + temperature / (3 * maxGlobalTempAnomaly)); // 3 is a reduction factor
+
+        Point3D yAxis = new Point3D(0, 1, 0);
+        Point3D diff = target.subtract(origin);
+        double height = diff.magnitude();
+
+        Point3D mid = target.midpoint(origin);
+        Translate moveToMidpoint = new Translate(mid.getX(), mid.getY(), mid.getZ());
+
+        Point3D axisOfRotation = diff.crossProduct(yAxis);
+        double angle = Math.acos(diff.normalize().dotProduct(yAxis));
+        Rotate rotateAroundCenter = new Rotate(-Math.toDegrees(angle), axisOfRotation);
+
+        bar.setMaterial(material);
+        bar.setHeight(height);
+        bar.getTransforms().clear();
+        bar.getTransforms().addAll(moveToMidpoint, rotateAroundCenter);
     }
 }
 

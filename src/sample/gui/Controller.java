@@ -89,14 +89,19 @@ public class Controller implements Initializable {
             }
         });
 
-        yearSlider.valueProperty().addListener((observableValue, number, t1) -> yearView.setYear(1880 + (int) ((t1.floatValue() * 140) / 100)));
-
-        // I chose on mouse released to prevent lags when thumb is dragged all over the slider, year is actualized only when mouse is released
-        yearSlider.setOnMouseReleased(mouseEvent -> {
+        yearSlider.valueProperty().addListener((observableValue, number, t1) -> {
             currentYear = 1880 + (int) ((yearSlider.getValue() * 140) / 100); // 140 = 2020 - 1880
+            yearView.setYear(currentYear);
             currentYearTempAnomaly = model.getYearTempAnomaly(currentYear);
             showDataOnEarth();
         });
+
+        // I chose on mouse released to prevent lags when thumb is dragged all over the slider, year is actualized only when mouse is released
+        /*yearSlider.setOnMouseReleased(mouseEvent -> {
+            currentYear = 1880 + (int) ((yearSlider.getValue() * 140) / 100); // 140 = 2020 - 1880
+            currentYearTempAnomaly = model.getYearTempAnomaly(currentYear);
+            showDataOnEarth();
+        });*/
     }
 
     /**
@@ -119,10 +124,10 @@ public class Controller implements Initializable {
     private void showDataOnEarth() {
         switch (dataSelectedView) {
             case "quadrilateral":
-                earth.addQuadrilateralFilterOverWorld(currentYearTempAnomaly);
+                earth.updateQuadrilateralFilterOverWorld(currentYearTempAnomaly);
                 break;
             case "histogram":
-                earth.addHistogramFilterOverWorld(currentYearTempAnomaly);
+                earth.updateHistogramFilterOverWorld(currentYearTempAnomaly);
         }
     }
 }
