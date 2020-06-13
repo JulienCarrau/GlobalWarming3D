@@ -40,8 +40,8 @@ public class Controller implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        dataSelectedView = "quadrilateral";
-        currentYear = 1880;
+        dataSelectedView = "histogram"; // quadrilateral histogram
+        currentYear = 2020;
     }
 
     /**
@@ -65,7 +65,7 @@ public class Controller implements Initializable {
                 earth.addQuadrilateralFilterOverWorld(yta);
                 break;
             case "histogram":
-
+                earth.addHistogramFilterOverWorld(yta);
         }
     }
 }

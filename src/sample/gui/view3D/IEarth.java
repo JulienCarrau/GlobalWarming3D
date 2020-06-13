@@ -8,5 +8,6 @@ import java.util.ArrayList;
 
 public interface IEarth {
     void addQuadrilateralFilterOverWorld(YearTempAnomaly anomaly);
+    void addHistogramFilterOverWorld(YearTempAnomaly anomaly);
     ArrayList<Color> getColors();
 }

@@ -8,6 +8,8 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.*;
+import javafx.scene.transform.Rotate;
+import javafx.scene.transform.Translate;
 import sample.app.LatLonPair;
 import sample.app.YearTempAnomaly;
 
@@ -19,7 +21,7 @@ public class Earth implements IEarth {
     private ArrayList<PhongMaterial> colorGradient; // Index 0 is blue and index 11 is red
     private ArrayList<LatLonPair> knownLocations;
     private ArrayList<Color> colors;
-    private float colorStep, minGlobalTempAnomaly; // Correspond to how much a temperature needs to vary to change color
+    private float colorStep, minGlobalTempAnomaly, maxGlobalTempAnomaly; // Correspond to how much a temperature needs to vary to change color
 
     private static final double TEXTURE_LAT_OFFSET = -0.2f;
     private static final double TEXTURE_LON_OFFSET = 2.8f;
@@ -34,7 +36,8 @@ public class Earth implements IEarth {
         this.knownLocations = knownLocations;
 
         minGlobalTempAnomaly = globalMinAndMaxTemp.get(0);
-        colorStep = (globalMinAndMaxTemp.get(1) - globalMinAndMaxTemp.get(0)) / 11;
+        maxGlobalTempAnomaly = globalMinAndMaxTemp.get(1);
+        colorStep = (maxGlobalTempAnomaly - minGlobalTempAnomaly) / 11;
 
         root3D = new Group();
 
@@ -120,8 +123,33 @@ public class Earth implements IEarth {
      */
     @Override
     public void addQuadrilateralFilterOverWorld(YearTempAnomaly anomaly) {
-        for (LatLonPair pair : knownLocations)
-            addQuadrilateralFromCenterAndAngle(pair.getLat(), pair.getLon(), 4, colorGradient.get((int) ((anomaly.getLocalTempAnomaly(pair.getLat(), pair.getLon()) - minGlobalTempAnomaly) / colorStep)));
+        Float temperature;
+        int colorIndex;
+        for (LatLonPair pair : knownLocations) {
+            temperature = anomaly.getLocalTempAnomaly(pair.getLat(), pair.getLon());
+            if (!temperature.equals(Float.NaN)) {
+                colorIndex = (int) ((temperature - minGlobalTempAnomaly) / colorStep);
+                addQuadrilateralFromCenterAndAngle(pair.getLat(), pair.getLon(), 4, colorGradient.get(colorIndex));
+            }
+        }
+    }
+
+    /**
+     * Fonctionality: Afficher toutes les valeurs des anomalies de température positives d’une année donnée sur le globe sous forme d’histogrammes. Ces histogrammes seront centrés dans la zone associée et alignés sur une ligne passant par le centre du globe. La taille des histogrammes sera proportionnelle à la valeur de l’anomalie de température. L’histogramme pourra également avoir une couleur liée à la valeur. Les valeurs négatives pourront être représentées par des petits carrés de couleur au centre de la zone (en utilisant un dégradé de bleu par exemple). Afficher une légende indiquant les températures minimales et maximale ainsi que les couleurs associées.
+     * Draw an histogram map over the earth showing temperatures anomaly.
+     * @param anomaly Temperature anomaly of this year.
+     */
+    @Override
+    public void addHistogramFilterOverWorld(YearTempAnomaly anomaly) {
+        Float temperature;
+        int colorIndex;
+        for (LatLonPair pair : knownLocations) {
+            temperature = anomaly.getLocalTempAnomaly(pair.getLat(), pair.getLon());
+            if (!temperature.equals(Float.NaN) && temperature > 0) {
+                colorIndex = (int) ((temperature - minGlobalTempAnomaly) / colorStep);
+                addHistogramBarFromCenterAndDiameter(pair.getLat(), pair.getLon(), temperature, colorGradient.get(colorIndex));
+            }
+        }
     }
 
     /**
@@ -202,6 +230,58 @@ public class Earth implements IEarth {
         meshView.setMaterial(material);
         root3D.getChildren().add(meshView);
     }
+
+    /**
+     *
+     * @param lat
+     * @param lon
+     * @param height
+     * @param material
+     */
+    private void addHistogramBarFromCenterAndDiameter(float lat, float lon, float height, PhongMaterial material) {
+        Point3D base = geoCoordTo3dCoord(lat, lon, 1);
+        Point3D top = geoCoordTo3dCoord(lat, lon, 1 + height / (3 * maxGlobalTempAnomaly)); // 3 is a reduction factor
+
+        addHistogramBar(base, top, material);
+    }
+
+    /**
+     *
+     * @param base
+     * @param top
+     * @param material
+     */
+    private void addHistogramBar(Point3D base, Point3D top, PhongMaterial material) {
+        Cylinder bar = createLine(base, top);
+        bar.setMaterial(material);
+
+        root3D.getChildren().add(bar);
+    }
+
+    /**
+     * From Rahel LÃ¼thy : https://netzwerg.ch/blog/2015/03/22/javafx-3d-line/
+     * @param origin
+     * @param target
+     * @return
+     */
+    private Cylinder createLine(Point3D origin, Point3D target) {
+        Point3D yAxis = new Point3D(0, 1, 0);
+        Point3D diff = target.subtract(origin);
+        double height = diff.magnitude();
+
+        Point3D mid = target.midpoint(origin);
+        Translate moveToMidpoint = new Translate(mid.getX(), mid.getY(), mid.getZ());
+
+        Point3D axisOfRotation = diff.crossProduct(yAxis);
+        double angle = Math.acos(diff.normalize().dotProduct(yAxis));
+        Rotate rotateAroundCenter = new Rotate(-Math.toDegrees(angle), axisOfRotation);
+
+        Cylinder bar = new Cylinder(0.01f, height);
+
+        bar.getTransforms().addAll(moveToMidpoint, rotateAroundCenter);
+
+        return bar;
+    }
 }
 
 /*
@@ -223,24 +303,4 @@ public class Earth implements IEarth {
         pins.setTranslateZ(position.getZ());
 
         root3D.getChildren().add(pins);
-    }*/
-
-    /* From Rahel LÃ¼thy : https://netzwerg.ch/blog/2015/03/22/javafx-3d-line/
-    public Cylinder createLine(Point3D origin, Point3D target) {
-        Point3D yAxis = new Point3D(0, 1, 0);
-        Point3D diff = target.subtract(origin);
-        double height = diff.magnitude();
-
-        Point3D mid = target.midpoint(origin);
-        Translate moveToMidpoint = new Translate(mid.getX(), mid.getY(), mid.getZ());
-
-        Point3D axisOfRotation = diff.crossProduct(yAxis);
-        double angle = Math.acos(diff.normalize().dotProduct(yAxis));
-        Rotate rotateAroundCenter = new Rotate(-Math.toDegrees(angle), axisOfRotation);
-
-        Cylinder line = new Cylinder(0.01f, height);
-
-        line.getTransforms().addAll(moveToMidpoint, rotateAroundCenter);
-
-        return line;
     }*/
