@@ -1,7 +1,6 @@
 package sample.gui.view3D;
 
 import javafx.scene.paint.Color;
-import sample.app.LatLonPair;
 import sample.app.YearTempAnomaly;
 
 import java.util.ArrayList;

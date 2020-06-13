@@ -122,7 +122,8 @@ public class Earth implements IEarth {
 
     /**
      * Fonctionality: Afficher toutes les valeurs des anomalies de température d’une année donnée sur le globe sous forme quadrilatère de couleur (vous pourrez vous aider du tutoriel réalisé à la première séance). Vous devrez faire en sorte que la couleur chance en fonction de la valeur de l’anomalie pour chacune des zones (en utilisant, par exemple, un dégradé de couleur allant du bleu au rouge). Afficher une légende indiquant les températures minimales et maximale ainsi que les couleurs associées.
-     * Draw a quadrilateral map over the earth showing temperatures anomaly.
+     * Draw a quadrilateral map over the earth showing temperatures anomaly. Quadrilateral's colors may vary according to anomly's temperature.
+     * If temperature anomaly is null (NA), it's not drawn.
      * @param anomaly Temperature anomaly of this year.
      */
     @Override
@@ -145,8 +146,9 @@ public class Earth implements IEarth {
     }
 
     /**
-     * Fonctionality: Afficher toutes les valeurs des anomalies de température positives d’une année donnée sur le globe sous forme d’histogrammes. Ces histogrammes seront centrés dans la zone associée et alignés sur une ligne passant par le centre du globe. La taille des histogrammes sera proportionnelle à la valeur de l’anomalie de température. L’histogramme pourra également avoir une couleur liée à la valeur. Les valeurs négatives pourront être représentées par des petits carrés de couleur au centre de la zone (en utilisant un dégradé de bleu par exemple). Afficher une légende indiquant les températures minimales et maximale ainsi que les couleurs associées.
-     * Draw an histogram map over the earth showing temperatures anomaly.
+     * Functionality: Afficher toutes les valeurs des anomalies de température positives d’une année donnée sur le globe sous forme d’histogrammes. Ces histogrammes seront centrés dans la zone associée et alignés sur une ligne passant par le centre du globe. La taille des histogrammes sera proportionnelle à la valeur de l’anomalie de température. L’histogramme pourra également avoir une couleur liée à la valeur. Les valeurs négatives pourront être représentées par des petits carrés de couleur au centre de la zone (en utilisant un dégradé de bleu par exemple). Afficher une légende indiquant les températures minimales et maximale ainsi que les couleurs associées.
+     * Draw an histogram map over the earth showing temperatures anomaly. Bar's colors and height may vary according to anomly's temperature.
+     * If temperature anomaly is negative or null (NA), it's not drawn.
      * @param anomaly Temperature anomaly of this year.
      */
     @Override
@@ -248,11 +250,11 @@ public class Earth implements IEarth {
     }
 
     /**
-     *
-     * @param lat
-     * @param lon
-     * @param height
-     * @param material
+     * Draw an histogram bar over earth according to a geological position, anomaly's intensity (height) and a material.
+     * @param lat Latitude value.
+     * @param lon Longitude value.
+     * @param height Temperature Anomaly's intensity.
+     * @param material Desired material for this bar.
      */
     private void addHistogramBarFromCenterAndDiameter(float lat, float lon, float height, PhongMaterial material) {
         Point3D base = geoCoordTo3dCoord(lat, lon, 1);
@@ -262,10 +264,10 @@ public class Earth implements IEarth {
     }
 
     /**
-     *
-     * @param base
-     * @param top
-     * @param material
+     * Draw an histogram bar according to a start, end point and material.
+     * @param base Start point.
+     * @param top End (top) point.
+     * @param material Desired material for this bar.
      */
     private void addHistogramBar(Point3D base, Point3D top, PhongMaterial material) {
         Cylinder bar = createBar(base, top);
@@ -276,9 +278,10 @@ public class Earth implements IEarth {
 
     /**
      * From Rahel LÃ¼thy : https://netzwerg.ch/blog/2015/03/22/javafx-3d-line/
-     * @param origin
-     * @param target
-     * @return
+     * Draw an cylinder according to a start and an end point. Its radium is 0.01.
+     * @param origin Start point.
+     * @param target End point.
+     * @return Corresponding cylinder linking start and end points.
      */
     private Cylinder createBar(Point3D origin, Point3D target) {
         Point3D yAxis = new Point3D(0, 1, 0);
