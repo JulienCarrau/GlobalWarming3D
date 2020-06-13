@@ -1,4 +1,4 @@
-package sample.gui.view2D.legend;
+package sample.gui.view2D;
 
 import javafx.scene.*;
 import javafx.scene.layout.Pane;
@@ -9,23 +9,33 @@ import javafx.scene.text.Text;
 import java.util.ArrayList;
 
 public class Legend {
-    private Group root2D;
+    private Group root;
     private Text minText, maxText;
 
     /**
      * Legend's constructor.
-     * @param pane2D Pane where we store legend.
+     * @param pane Pane where we store legend.
      * @param min Minimal temperature anomaly.
      * @param max Maximal temperature anomaly.
      * @param colors ArrayList of all colors present in legend.
      */
-    public Legend(Pane pane2D, float min, float max, ArrayList<Color> colors) {
-        root2D = new Group();
+    public Legend(Pane pane, float min, float max, ArrayList<Color> colors) {
+        root = new Group();
 
-        SubScene scene = new SubScene(root2D, 60, 220);
+        SubScene scene = new SubScene(root, 60, 220);
         scene.setLayoutX(940);
         scene.setLayoutY(207);
-        pane2D.getChildren().add(scene);
+        pane.getChildren().add(scene);
+
+        minText = new Text();
+        minText.setTranslateX(10);
+        minText.setTranslateY(210);
+        root.getChildren().add(minText);
+
+        maxText = new Text();
+        maxText.setTranslateX(10);
+        maxText.setTranslateY(10);
+        root.getChildren().add(maxText);
 
         setMin(min);
         setMax(max);
@@ -38,10 +48,7 @@ public class Legend {
      * @param value Minimal temperature value.
      */
     private void setMin(float value) {
-        minText = new Text(String.format("%.2f", value) + "°C");
-        minText.setTranslateX(10);
-        minText.setTranslateY(210);
-        root2D.getChildren().add(minText);
+        minText.setText(String.format("%.2f", value) + "°C");
     }
 
     /**
@@ -49,10 +56,7 @@ public class Legend {
      * @param value Maximal temperature value.
      */
     private void setMax(float value) {
-        maxText = new Text(String.format("%.2f", value) + "°C");
-        maxText.setTranslateX(10);
-        maxText.setTranslateY(10);
-        root2D.getChildren().add(maxText);
+        maxText.setText(String.format("%.2f", value) + "°C");
     }
 
     /**
@@ -66,7 +70,7 @@ public class Legend {
             r.setTranslateX(15);
             r.setTranslateY(180 - i);
             i += 15;
-            root2D.getChildren().add(r);
+            root.getChildren().add(r);
         }
     }
 }
