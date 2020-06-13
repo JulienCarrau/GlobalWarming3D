@@ -1,5 +1,8 @@
 package sample.gui;
 
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -30,6 +33,7 @@ public class Controller implements Initializable {
 
     private Earth earth;
     private Legend legend;
+    private YearTempAnomaly currentYearTempAnomaly;
     private String dataSelectedView;
     private int currentYear;
 
@@ -40,8 +44,17 @@ public class Controller implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        dataSelectedView = "histogram"; // quadrilateral histogram
-        currentYear = 2020;
+        dataSelectedView = "quadrilateral"; // quadrilateral histogram
+        currentYear = 1880;
+
+        histogramButton.setOnAction(actionEvent -> {
+            dataSelectedView = "histogram";
+            showDataOnEarth();
+        });
+        quadrilateralButton.setOnAction(actionEvent -> {
+            dataSelectedView = "quadrilateral";
+            showDataOnEarth();
+        });
     }
 
     /**
@@ -52,20 +65,20 @@ public class Controller implements Initializable {
         earth = new Earth(pane3D, app.getKnownLocations(), app.getGlobalMinAndMax()); // Fonctionality: Afficher un globe en 3D et permettre à l’utilisateur tourner autour grâce à la souris.
         legend = new Legend(pane3D, app.getGlobalMinAndMax().get(0), app.getGlobalMinAndMax().get(1), earth.getColors());
 
-        showDataOnEarth(app.getYearTempAnomaly(currentYear));
+        currentYearTempAnomaly = app.getYearTempAnomaly(currentYear);
+        showDataOnEarth();
     }
 
     /**
-     * Show data over earth according to selected data visualization.
-     * @param yta YearTempAnomaly corresponding to data to show.
+     * Show data over earth according to selected data visualization and current year.
      */
-    private void showDataOnEarth(YearTempAnomaly yta) {
+    private void showDataOnEarth() {
         switch (dataSelectedView) {
             case "quadrilateral":
-                earth.addQuadrilateralFilterOverWorld(yta);
+                earth.addQuadrilateralFilterOverWorld(currentYearTempAnomaly);
                 break;
             case "histogram":
-                earth.addHistogramFilterOverWorld(yta);
+                earth.addHistogramFilterOverWorld(currentYearTempAnomaly);
         }
     }
 }

@@ -17,7 +17,7 @@ import java.net.URL;
 import java.util.ArrayList;
 
 public class Earth implements IEarth {
-    private Group root3D;
+    private Group root3D, dataGroup;
     private ArrayList<PhongMaterial> colorGradient; // Index 0 is blue and index 11 is red
     private ArrayList<LatLonPair> knownLocations;
     private ArrayList<Color> colors;
@@ -40,6 +40,7 @@ public class Earth implements IEarth {
         colorStep = (maxGlobalTempAnomaly - minGlobalTempAnomaly) / 11;
 
         root3D = new Group();
+        dataGroup = new Group();
 
         // Load geometry
         ObjModelImporter objImporter = new ObjModelImporter();
@@ -61,6 +62,9 @@ public class Earth implements IEarth {
         AmbientLight ambientLight = new AmbientLight(Color.WHITE);
         ambientLight.getScope().addAll(root3D);
         root3D.getChildren().add(ambientLight);
+
+        // Add dataGroup (for first delete, because ancient datagroup is deleted each time we change or update data)
+        root3D.getChildren().add(dataGroup);
 
         SubScene scene = new SubScene(root3D, 1000, 634, true, SceneAntialiasing.BALANCED);
         scene.setCamera(camera);
@@ -123,6 +127,10 @@ public class Earth implements IEarth {
      */
     @Override
     public void addQuadrilateralFilterOverWorld(YearTempAnomaly anomaly) {
+        // Delete old dataGroup for replacing it by the new one
+        root3D.getChildren().remove(dataGroup);
+        dataGroup = new Group(); // Reset it
+
         Float temperature;
         int colorIndex;
         for (LatLonPair pair : knownLocations) {
@@ -132,6 +140,8 @@ public class Earth implements IEarth {
                 addQuadrilateralFromCenterAndAngle(pair.getLat(), pair.getLon(), 4, colorGradient.get(colorIndex));
             }
         }
+
+        root3D.getChildren().add(dataGroup);
     }
 
     /**
@@ -141,6 +151,10 @@ public class Earth implements IEarth {
      */
     @Override
     public void addHistogramFilterOverWorld(YearTempAnomaly anomaly) {
+        // Delete old dataGroup for replacing it by the new one
+        root3D.getChildren().remove(dataGroup);
+        dataGroup = new Group(); // Reset it
+
         Float temperature;
         int colorIndex;
         for (LatLonPair pair : knownLocations) {
@@ -150,6 +164,8 @@ public class Earth implements IEarth {
                 addHistogramBarFromCenterAndDiameter(pair.getLat(), pair.getLon(), temperature, colorGradient.get(colorIndex));
             }
         }
+
+        root3D.getChildren().add(dataGroup);
     }
 
     /**
@@ -228,7 +244,7 @@ public class Earth implements IEarth {
 
         final MeshView meshView = new MeshView(triangleMesh);
         meshView.setMaterial(material);
-        root3D.getChildren().add(meshView);
+        dataGroup.getChildren().add(meshView);
     }
 
     /**
@@ -252,10 +268,10 @@ public class Earth implements IEarth {
      * @param material
      */
     private void addHistogramBar(Point3D base, Point3D top, PhongMaterial material) {
-        Cylinder bar = createLine(base, top);
+        Cylinder bar = createBar(base, top);
         bar.setMaterial(material);
 
-        root3D.getChildren().add(bar);
+        dataGroup.getChildren().add(bar);
     }
 
     /**
@@ -264,7 +280,7 @@ public class Earth implements IEarth {
      * @param target
      * @return
      */
-    private Cylinder createLine(Point3D origin, Point3D target) {
+    private Cylinder createBar(Point3D origin, Point3D target) {
         Point3D yAxis = new Point3D(0, 1, 0);
         Point3D diff = target.subtract(origin);
         double height = diff.magnitude();
