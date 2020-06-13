@@ -21,9 +21,9 @@ public class Earth implements IEarth {
     private boolean histogramViewEnabled;
     PhongMaterial transparent = new PhongMaterial(); // Transparent material
     private ArrayList<PhongMaterial> colorGradient; // Index 0 is blue and index 11 is red
-    private ArrayList<LatLonPair> knownLocations;
+    private final ArrayList<LatLonPair> knownLocations;
     private ArrayList<Color> colors;
-    private float colorStep, minGlobalTempAnomaly, maxGlobalTempAnomaly; // Correspond to how much a temperature needs to vary to change color
+    private final float colorStep, minGlobalTempAnomaly, maxGlobalTempAnomaly; // Correspond to how much a temperature needs to vary to change color
 
     private static final double TEXTURE_LAT_OFFSET = -0.2f;
     private static final double TEXTURE_LON_OFFSET = 2.8f;
