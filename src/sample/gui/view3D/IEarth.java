@@ -7,7 +7,6 @@ import sample.app.YearTempAnomaly;
 import java.util.ArrayList;
 
 public interface IEarth {
-    void addQuadrilateralFilterOverWorld(ArrayList<LatLonPair> locations, YearTempAnomaly anomaly);
-    void setColorStep(float minTemp, float maxTemp);
+    void addQuadrilateralFilterOverWorld(YearTempAnomaly anomaly);
     ArrayList<Color> getColors();
 }

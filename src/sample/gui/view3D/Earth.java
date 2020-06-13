@@ -17,6 +17,7 @@ import java.util.ArrayList;
 public class Earth implements IEarth {
     private Group root3D;
     private ArrayList<PhongMaterial> colorGradient; // Index 0 is blue and index 11 is red
+    private ArrayList<LatLonPair> knownLocations;
     private ArrayList<Color> colors;
     private float colorStep, minGlobalTempAnomaly; // Correspond to how much a temperature needs to vary to change color
 
@@ -26,8 +27,15 @@ public class Earth implements IEarth {
     /**
      * Earth constructor, 3D representation of earth.
      * @param pane3D Pane where we want to draw earth into.
+     * @param knownLocations Known earth locations.
+     * @param globalMinAndMaxTemp Global minimal and maximal temperatures anomaly.
      */
-    public Earth(Pane pane3D) {
+    public Earth(Pane pane3D, ArrayList<LatLonPair> knownLocations, ArrayList<Float> globalMinAndMaxTemp) {
+        this.knownLocations = knownLocations;
+
+        minGlobalTempAnomaly = globalMinAndMaxTemp.get(0);
+        colorStep = (globalMinAndMaxTemp.get(1) - globalMinAndMaxTemp.get(0)) / 11;
+
         root3D = new Group();
 
         // Load geometry
@@ -108,24 +116,12 @@ public class Earth implements IEarth {
     /**
      * Fonctionality: Afficher toutes les valeurs des anomalies de température d’une année donnée sur le globe sous forme quadrilatère de couleur (vous pourrez vous aider du tutoriel réalisé à la première séance). Vous devrez faire en sorte que la couleur chance en fonction de la valeur de l’anomalie pour chacune des zones (en utilisant, par exemple, un dégradé de couleur allant du bleu au rouge). Afficher une légende indiquant les températures minimales et maximale ainsi que les couleurs associées.
      * Draw a quadrilateral map over the earth showing temperatures anomaly.
-     * @param locations List of known locations.
      * @param anomaly Temperature anomaly of this year.
      */
     @Override
-    public void addQuadrilateralFilterOverWorld(ArrayList<LatLonPair> locations, YearTempAnomaly anomaly) {
-        for (LatLonPair pair : locations)
+    public void addQuadrilateralFilterOverWorld(YearTempAnomaly anomaly) {
+        for (LatLonPair pair : knownLocations)
             addQuadrilateralFromCenterAndAngle(pair.getLat(), pair.getLon(), 4, colorGradient.get((int) ((anomaly.getLocalTempAnomaly(pair.getLat(), pair.getLon()) - minGlobalTempAnomaly) / colorStep)));
-    }
-
-    /**
-     * Set color step (amount of °C to change color) and set min and max temperatures labels in legend.
-     * @param minTemp Minimal temperature anomaly.
-     * @param maxTemp Maximal temperature anomaly.
-     */
-    @Override
-    public void setColorStep(float minTemp, float maxTemp) {
-        minGlobalTempAnomaly = minTemp;
-        colorStep = (maxTemp - minTemp) / 11;
     }
 
     /**

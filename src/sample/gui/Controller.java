@@ -7,6 +7,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.layout.Pane;
 import sample.app.App;
+import sample.app.YearTempAnomaly;
 import sample.gui.view2D.legend.Legend;
 import sample.gui.view3D.Earth;
 
@@ -29,6 +30,7 @@ public class Controller implements Initializable {
 
     private Earth earth;
     private Legend legend;
+    private String dataSelectedView;
     private int currentYear;
 
     /**
@@ -38,8 +40,8 @@ public class Controller implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        dataSelectedView = "quadrilateral";
         currentYear = 1880;
-        earth = new Earth(pane3D); // Fonctionality: Afficher un globe en 3D et permettre à l’utilisateur tourner autour grâce à la souris.
     }
 
     /**
@@ -47,16 +49,23 @@ public class Controller implements Initializable {
      * @param app Application model.
      */
     public void linkModelAndController(App app) {
+        earth = new Earth(pane3D, app.getKnownLocations(), app.getGlobalMinAndMax()); // Fonctionality: Afficher un globe en 3D et permettre à l’utilisateur tourner autour grâce à la souris.
         legend = new Legend(pane3D, app.getGlobalMinAndMax().get(0), app.getGlobalMinAndMax().get(1), earth.getColors());
-        setEarthColorStep(app.getGlobalMinAndMax());
-        earth.addQuadrilateralFilterOverWorld(app.getKnownLocations(), app.getYearTempAnomaly(currentYear));
+
+        showDataOnEarth(app.getYearTempAnomaly(currentYear));
     }
 
     /**
-     * Set earth's color step and legend minimal and maximal values.
-     * @param minAndMax Minimal and maximal temperature anomaly values.
+     * Show data over earth according to selected data visualization.
+     * @param yta YearTempAnomaly corresponding to data to show.
      */
-    public void setEarthColorStep(ArrayList<Float> minAndMax) {
-        earth.setColorStep(minAndMax.get(0), minAndMax.get(1));
+    private void showDataOnEarth(YearTempAnomaly yta) {
+        switch (dataSelectedView) {
+            case "quadrilateral":
+                earth.addQuadrilateralFilterOverWorld(yta);
+                break;
+            case "histogram":
+
+        }
     }
 }
