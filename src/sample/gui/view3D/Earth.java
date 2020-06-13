@@ -364,24 +364,3 @@ public class Earth implements IEarth {
         bar.getTransforms().addAll(moveToMidpoint, rotateAroundCenter);
     }
 }
-
-/*
-    //earth.displayTown("Brest", 48.447911, -4.418539);
-    //earth.displayTown("Marseille", 43.435555, 5.213611);
-    public void displayTown(String name, double lat, double lon) {
-        final PhongMaterial greenMaterial = new PhongMaterial();
-        greenMaterial.setDiffuseColor(Color.GREEN);
-        greenMaterial.setSpecularColor(Color.GREEN);
-
-        Sphere pins = new Sphere(0.01);
-        pins.setId(name);
-        pins.setMaterial(greenMaterial);
-
-        Point3D position = geoCoordTo3dCoord(lat, lon, 1);
-
-        pins.setTranslateX(position.getX());
-        pins.setTranslateY(position.getY());
-        pins.setTranslateZ(position.getZ());
-
-        root3D.getChildren().add(pins);
-    }*/
