@@ -1,11 +1,15 @@
 package sample.gui;
 
+import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
-import javafx.scene.layout.Pane;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import javafx.util.StringConverter;
 import sample.app.App;
 import sample.app.YearTempAnomaly;
@@ -13,6 +17,7 @@ import sample.gui.view2D.YearView;
 import sample.gui.view2D.Legend;
 import sample.gui.view3D.Earth;
 
+import java.awt.*;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -55,18 +60,40 @@ public class Controller implements Initializable {
      * Initialize listeners to buttons.
      */
     private void setupButtons() {
+        Background invisible = new Background(new BackgroundFill(Color.TRANSPARENT, null, null));
+        Border whenMouseIsOver = new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, new CornerRadii(1), new BorderWidths(1)));
+        Border otherwise = new Border(new BorderStroke(Color.TRANSPARENT, BorderStrokeStyle.SOLID, new CornerRadii(1), new BorderWidths(1)));
+
+        histogramButton.setBackground(invisible);
+        histogramButton.borderProperty().bind(Bindings.when(histogramButton.hoverProperty()).then(whenMouseIsOver).otherwise(otherwise));
+        histogramButton.setGraphic(new ImageView(new Image("sample/gui/icons/histogram.png")));
         histogramButton.setOnAction(actionEvent -> {
             dataSelectedView = "histogram";
             showDataOnEarth();
         });
 
+        quadrilateralButton.setBackground(invisible);
+        quadrilateralButton.borderProperty().bind(Bindings.when(quadrilateralButton.hoverProperty()).then(whenMouseIsOver).otherwise(otherwise));
+        quadrilateralButton.setGraphic(new ImageView(new Image("sample/gui/icons/quadrilateral.png")));
         quadrilateralButton.setOnAction(actionEvent -> {
             dataSelectedView = "quadrilateral";
             showDataOnEarth();
         });
+
+        playPauseButton.setBackground(invisible);
+        playPauseButton.borderProperty().bind(Bindings.when(playPauseButton.hoverProperty()).then(whenMouseIsOver).otherwise(otherwise));
+        playPauseButton.setGraphic(new ImageView(new Image("sample/gui/icons/play.png")));
+        playPauseButton.setOnAction(actionEvent ->
+            playPauseButton.setGraphic(new ImageView(new Image("sample/gui/icons/pause.png")))
+        );
+
+        speedButton.setBackground(invisible);
+        speedButton.borderProperty().bind(Bindings.when(speedButton.hoverProperty()).then(whenMouseIsOver).otherwise(otherwise));
+        speedButton.setGraphic(new ImageView(new Image("sample/gui/icons/fast-forward.png")));
     }
 
     /**
+     * Functionality: Permettre à l’utilisateur de choisir l’année affichée.
      * Initialize slider and its listeners.
      */
     private void setupSlider() {
