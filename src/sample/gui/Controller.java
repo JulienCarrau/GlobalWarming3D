@@ -3,8 +3,6 @@ package sample.gui;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.beans.binding.Bindings;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -44,7 +42,7 @@ public class Controller implements Initializable {
     private YearTempAnomaly currentYearTempAnomaly; // Temperature anomaly of current year
     private String dataSelectedView; // Selected data visualization (histogram / quadrilateral)
     private int currentYear; // Current year
-    private boolean animationActive; // Keep track of when animation is played or pause
+    private boolean animationActive, animationIsForward; // Keep track of when animation is played or pause
     private Timeline yearAnimation; // Animation
     private int speedRate; // Animation's speed rate
 
@@ -59,8 +57,15 @@ public class Controller implements Initializable {
         currentYear = 1880;
         yearView = new YearView(pane3D, currentYear);
         animationActive = false;
+        animationIsForward = true;
         speedLabel.setText("x1");
         speedRate = 1;
+
+        yearAnimation = new Timeline(new KeyFrame(Duration.seconds(1), actionEvent1 -> {
+            goToNextYear();
+            yearSlider.valueProperty().setValue(currentYear);
+        }));
+        yearAnimation.setCycleCount(Timeline.INDEFINITE);
 
         setupButtons();
         setupSlider();
@@ -114,13 +119,6 @@ public class Controller implements Initializable {
                 animationActive = true;
                 playPauseButton.setGraphic(new ImageView(new Image("sample/gui/icons/pause.png")));
 
-                yearAnimation = new Timeline(new KeyFrame(Duration.seconds(1), actionEvent1 -> {
-                    if (currentYear < 2020) currentYear++;
-                    else currentYear = 1880;
-                    yearSlider.valueProperty().setValue(currentYear);
-                }));
-                yearAnimation.setRate(speedRate);
-                yearAnimation.setCycleCount(Timeline.INDEFINITE);
                 yearAnimation.play();
             }
         });
@@ -131,11 +129,25 @@ public class Controller implements Initializable {
         speedButton.setOnAction(actionEvent -> {
             if (speedRate < 32) speedRate *= 2;
             else speedRate = 1;
+            yearAnimation.setRate(speedRate);
 
             if (!animationActive) playPauseButton.fire();
-            else yearAnimation.setRate(speedRate);
 
             speedLabel.setText("x" + speedRate);
+        });
+
+        readUpBackWard.setBackground(invisible);
+        readUpBackWard.borderProperty().bind(Bindings.when(readUpBackWard.hoverProperty()).then(whenMouseIsOver).otherwise(otherwise));
+        readUpBackWard.setGraphic(new ImageView(new Image("sample/gui/icons/backward.png")));
+        readUpBackWard.setOnAction(actionEvent -> {
+            if (animationIsForward) {
+                animationIsForward = false;
+                readUpBackWard.setGraphic(new ImageView(new Image("sample/gui/icons/forward.png")));
+            } else {
+                animationIsForward = true;
+                readUpBackWard.setGraphic(new ImageView(new Image("sample/gui/icons/backward.png")));
+            }
+            if (!animationActive) playPauseButton.fire();
         });
     }
 
@@ -200,6 +212,19 @@ public class Controller implements Initializable {
                 break;
             case "histogram":
                 earth.updateHistogramFilterOverWorld(currentYearTempAnomaly);
+        }
+    }
+
+    /**
+     * This is used when animation is running. Depending on animationIsForward, increment or decrement years.
+     */
+    private void goToNextYear() {
+        if (animationIsForward) {
+            if (currentYear <= 2020) currentYear++;
+            else currentYear = 1880;
+        } else {
+            if (currentYear >= 1880) currentYear--;
+            else currentYear = 2020;
         }
     }
 }

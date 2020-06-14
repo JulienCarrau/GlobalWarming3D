@@ -70,7 +70,7 @@ public class Earth implements IEarth {
         ambientLight.getScope().addAll(root3D);
         root3D.getChildren().add(ambientLight);
 
-        SubScene scene = new SubScene(root3D, 1000, 634, true, SceneAntialiasing.BALANCED);
+        SubScene scene = new SubScene(root3D, 1000, 670, true, SceneAntialiasing.BALANCED);
         scene.setCamera(camera);
         pane3D.getChildren().add(scene);
 

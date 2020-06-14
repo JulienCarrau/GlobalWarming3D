@@ -12,75 +12,74 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0"
-          prefWidth="1000.0" xmlns="http://javafx.com/javafx/11.0.2-internal" xmlns:fx="http://javafx.com/fxml/1"
-          fx:controller="sample.gui.Controller">
+<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.gui.Controller">
     <columnConstraints>
-        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
     </columnConstraints>
     <rowConstraints>
-        <RowConstraints maxHeight="637.785888671875" minHeight="10.0" prefHeight="634.0559692382812" vgrow="SOMETIMES"/>
-        <RowConstraints maxHeight="391.5391845703125" minHeight="10.0" prefHeight="166.44403076171875"
-                        vgrow="SOMETIMES"/>
+        <RowConstraints maxHeight="670.0" minHeight="670.0" prefHeight="670.0" vgrow="SOMETIMES" />
+        <RowConstraints maxHeight="391.5391845703125" minHeight="10.0" prefHeight="166.44403076171875" vgrow="SOMETIMES" />
     </rowConstraints>
-    <Pane fx:id="pane3D" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #3D4849;"/>
-    <GridPane gridLinesVisible="true" GridPane.rowIndex="1">
+    <Pane fx:id="pane3D" prefHeight="670.0" prefWidth="1000.0" style="-fx-background-color: #3D4849;" />
+    <GridPane gridLinesVisible="true" prefWidth="1000.0" GridPane.rowIndex="1">
         <columnConstraints>
-            <ColumnConstraints hgrow="SOMETIMES" maxWidth="491.5391845703125" minWidth="10.0"
-                               prefWidth="312.16986083984375"/>
-            <ColumnConstraints hgrow="SOMETIMES" maxWidth="704.7517700195312" minWidth="10.0"
-                               prefWidth="687.8301391601562"/>
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="491.5391845703125" minWidth="10.0" prefWidth="240.159912109375" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="760.340087890625" minWidth="10.0" prefWidth="760.340087890625" />
         </columnConstraints>
         <rowConstraints>
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
         <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" spacing="5.0">
             <GridPane.margin>
-                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
             </GridPane.margin>
             <Label text="Data visualization">
                 <font>
-                    <Font size="15.0"/>
+                    <Font size="15.0" />
                 </font>
             </Label>
             <HBox alignment="CENTER" prefHeight="124.0" prefWidth="283.0">
                 <VBox.margin>
-                    <Insets bottom="5.0" left="5.0" right="5.0"/>
+                    <Insets bottom="5.0" left="5.0" right="5.0" />
                 </VBox.margin>
                 <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="5.0">
-                    <Button fx:id="histogramButton" contentDisplay="GRAPHIC_ONLY"
-                            mnemonicParsing="false" prefHeight="40.0" prefWidth="40.0" text="Button"/>
-                    <Label text="Histogram"/>
+                    <Button fx:id="histogramButton" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" prefHeight="40.0" prefWidth="40.0" text="Button" />
+                    <Label text="Histogram" />
                 </VBox>
                 <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="5.0">
-                    <Button fx:id="quadrilateralButton" contentDisplay="GRAPHIC_ONLY"
-                            mnemonicParsing="false" prefHeight="40.0" prefWidth="40.0" text="Button"/>
-                    <Label text="Quadrilateral"/>
+                    <Button fx:id="quadrilateralButton" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" prefHeight="40.0" prefWidth="40.0" text="Button" />
+                    <Label text="Quadrilateral" />
                 </VBox>
             </HBox>
         </VBox>
         <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" spacing="5.0" GridPane.columnIndex="1">
             <GridPane.margin>
-                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
             </GridPane.margin>
             <Label text="Animation">
                 <font>
-                    <Font size="15.0"/>
+                    <Font size="15.0" />
                 </font>
             </Label>
-            <HBox alignment="CENTER" prefHeight="81.0" prefWidth="648.0" spacing="15.0">
-                <VBox.margin>
-                    <Insets bottom="10.0" left="10.0" right="10.0"/>
-                </VBox.margin>
-                <Label text="Year:"/>
-                <Slider fx:id="yearSlider" prefHeight="16.0" prefWidth="429.0"/>
-                <Button fx:id="playPauseButton" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false"
-                        prefHeight="30.0" prefWidth="30.0" text="Button"/>
-                <Button fx:id="speedButton" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false"
-                        prefHeight="30.0" prefWidth="30.0" text="Button"/>
-                <Label fx:id="speedLabel" text="speed"/>
-            </HBox>
-            <Button fx:id="readUpBackWard" mnemonicParsing="false" text="Read upward"/>
+            <GridPane prefHeight="141.0" prefWidth="741.0">
+                <columnConstraints>
+                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="160.92095947265625" minWidth="6.60430908203125" prefWidth="47.111907958984375" />
+                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="549.4357299804688" minWidth="10.0" prefWidth="519.9053344726562" />
+                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="176.19970703125" minWidth="0.0" prefWidth="136.09466552734375" />
+                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="207.0142822265625" minWidth="10.0" prefWidth="32.10137939453125" />
+                </columnConstraints>
+                <rowConstraints>
+                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                </rowConstraints>
+                <Label text="Year:" />
+                <Slider fx:id="yearSlider" prefHeight="16.0" prefWidth="429.0" GridPane.columnIndex="1" />
+                <HBox alignment="CENTER" prefHeight="84.0" prefWidth="85.0" GridPane.columnIndex="2">
+                    <Button fx:id="playPauseButton" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" prefHeight="30.0" prefWidth="30.0" />
+                    <Button fx:id="readUpBackWard" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" prefHeight="30.0" prefWidth="30.0" />
+                    <Button fx:id="speedButton" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" prefHeight="30.0" prefWidth="30.0" />
+                </HBox>
+                <Label fx:id="speedLabel" text="speed" GridPane.columnIndex="3" />
+            </GridPane>
         </VBox>
     </GridPane>
 </GridPane>

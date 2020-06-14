@@ -24,7 +24,7 @@ public class Legend {
 
         SubScene scene = new SubScene(root, 60, 220);
         scene.setLayoutX(940);
-        scene.setLayoutY(207);
+        scene.setLayoutY(235);
         pane.getChildren().add(scene);
 
         minText = new Text();
