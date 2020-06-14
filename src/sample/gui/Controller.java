@@ -1,6 +1,10 @@
 package sample.gui;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.beans.binding.Bindings;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -10,6 +14,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.util.Duration;
 import javafx.util.StringConverter;
 import sample.app.App;
 import sample.app.YearTempAnomaly;
@@ -33,12 +38,15 @@ public class Controller implements Initializable {
     @FXML
     private Slider yearSlider;
 
-    private App model;
-    private Earth earth;
-    private YearView yearView;
-    private YearTempAnomaly currentYearTempAnomaly;
-    private String dataSelectedView;
-    private int currentYear;
+    private App model; // Application model
+    private Earth earth; // Earth 3D representation
+    private YearView yearView; // Show year in pane
+    private YearTempAnomaly currentYearTempAnomaly; // Temperature anomaly of current year
+    private String dataSelectedView; // Selected data visualization (histogram / quadrilateral)
+    private int currentYear; // Current year
+    private boolean animationActive; // Keep track of when animation is played or pause
+    private Timeline yearAnimation; // Animation
+    private int speedRate; // Animation's speed rate
 
     /**
      * Initialize everything that doesn't need an access to the model.
@@ -50,12 +58,19 @@ public class Controller implements Initializable {
         dataSelectedView = "histogram"; // quadrilateral or histogram
         currentYear = 1880;
         yearView = new YearView(pane3D, currentYear);
+        animationActive = false;
+        speedLabel.setText("x1");
+        speedRate = 1;
 
         setupButtons();
         setupSlider();
     }
 
     /**
+     * Functionalities:
+     *      - Animer l’évolution des anomalies de température année après année.
+     *      - Permettre à l'utilisateur de mettre en pause, d’arrêter et de reprendre l’animation.
+     *      - Permettre à l'utilisateur de régler la vitesse de l’animation.
      * Initialize styles and listeners to buttons.
      */
     private void setupButtons() {
@@ -89,13 +104,39 @@ public class Controller implements Initializable {
         playPauseButton.setBackground(invisible);
         playPauseButton.borderProperty().bind(Bindings.when(playPauseButton.hoverProperty()).then(whenMouseIsOver).otherwise(otherwise));
         playPauseButton.setGraphic(new ImageView(new Image("sample/gui/icons/play.png")));
-        playPauseButton.setOnAction(actionEvent ->
-            playPauseButton.setGraphic(new ImageView(new Image("sample/gui/icons/pause.png")))
-        );
+        playPauseButton.setOnAction(actionEvent -> {
+            if (animationActive) {
+                animationActive = false;
+                playPauseButton.setGraphic(new ImageView(new Image("sample/gui/icons/play.png")));
+
+                yearAnimation.pause();
+            } else {
+                animationActive = true;
+                playPauseButton.setGraphic(new ImageView(new Image("sample/gui/icons/pause.png")));
+
+                yearAnimation = new Timeline(new KeyFrame(Duration.seconds(1), actionEvent1 -> {
+                    if (currentYear < 2020) currentYear++;
+                    else currentYear = 1880;
+                    yearSlider.valueProperty().setValue(currentYear);
+                }));
+                yearAnimation.setRate(speedRate);
+                yearAnimation.setCycleCount(Timeline.INDEFINITE);
+                yearAnimation.play();
+            }
+        });
 
         speedButton.setBackground(invisible);
         speedButton.borderProperty().bind(Bindings.when(speedButton.hoverProperty()).then(whenMouseIsOver).otherwise(otherwise));
         speedButton.setGraphic(new ImageView(new Image("sample/gui/icons/fast-forward.png")));
+        speedButton.setOnAction(actionEvent -> {
+            if (speedRate < 32) speedRate *= 2;
+            else speedRate = 1;
+
+            if (!animationActive) playPauseButton.fire();
+            else yearAnimation.setRate(speedRate);
+
+            speedLabel.setText("x" + speedRate);
+        });
     }
 
     /**
@@ -103,15 +144,19 @@ public class Controller implements Initializable {
      * Initialize slider and its listeners.
      */
     private void setupSlider() {
+        yearSlider.setMin(1880);
+        yearSlider.setMax(2020);
+        yearSlider.setMinorTickCount(5);
+        yearSlider.setMajorTickUnit(35);
         yearSlider.setShowTickLabels(true);
 
         yearSlider.setLabelFormatter(new StringConverter<>() {
             @Override
             public String toString(Double n) {
-                if (n == 0) return "1880";
-                if (n == 25) return "1915";
-                if (n == 50) return "1950";
-                if (n == 75) return "1985";
+                if (n == 1880) return "1880";
+                if (n == 1915) return "1915";
+                if (n == 1950) return "1950";
+                if (n == 1985) return "1985";
                 return "2020";
             }
 
@@ -123,7 +168,7 @@ public class Controller implements Initializable {
         });
 
         yearSlider.valueProperty().addListener((observableValue, number, t1) -> {
-            currentYear = 1880 + (int) ((yearSlider.getValue() * 140) / 100); // 140 = 2020 - 1880
+            currentYear = (int) yearSlider.getValue();
             yearView.setYear(currentYear);
             currentYearTempAnomaly = model.getYearTempAnomaly(currentYear);
             showDataOnEarth();
