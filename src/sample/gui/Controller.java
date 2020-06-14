@@ -17,7 +17,6 @@ import sample.gui.view2D.YearView;
 import sample.gui.view2D.Legend;
 import sample.gui.view3D.Earth;
 
-import java.awt.*;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -57,10 +56,11 @@ public class Controller implements Initializable {
     }
 
     /**
-     * Initialize listeners to buttons.
+     * Initialize styles and listeners to buttons.
      */
     private void setupButtons() {
         Background invisible = new Background(new BackgroundFill(Color.TRANSPARENT, null, null));
+        Background selected = new Background(new BackgroundFill(Color.LIGHTGRAY, null, null));
         Border whenMouseIsOver = new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, new CornerRadii(1), new BorderWidths(1)));
         Border otherwise = new Border(new BorderStroke(Color.TRANSPARENT, BorderStrokeStyle.SOLID, new CornerRadii(1), new BorderWidths(1)));
 
@@ -68,6 +68,9 @@ public class Controller implements Initializable {
         histogramButton.borderProperty().bind(Bindings.when(histogramButton.hoverProperty()).then(whenMouseIsOver).otherwise(otherwise));
         histogramButton.setGraphic(new ImageView(new Image("sample/gui/icons/histogram.png")));
         histogramButton.setOnAction(actionEvent -> {
+            histogramButton.setBackground(selected);
+            quadrilateralButton.setBackground(invisible);
+
             dataSelectedView = "histogram";
             showDataOnEarth();
         });
@@ -76,6 +79,9 @@ public class Controller implements Initializable {
         quadrilateralButton.borderProperty().bind(Bindings.when(quadrilateralButton.hoverProperty()).then(whenMouseIsOver).otherwise(otherwise));
         quadrilateralButton.setGraphic(new ImageView(new Image("sample/gui/icons/quadrilateral.png")));
         quadrilateralButton.setOnAction(actionEvent -> {
+            quadrilateralButton.setBackground(selected);
+            histogramButton.setBackground(invisible);
+
             dataSelectedView = "quadrilateral";
             showDataOnEarth();
         });
@@ -134,7 +140,8 @@ public class Controller implements Initializable {
         new Legend(pane3D, model.getGlobalMinAndMax().get(0), model.getGlobalMinAndMax().get(1), earth.getColors());
 
         currentYearTempAnomaly = model.getYearTempAnomaly(currentYear);
-        showDataOnEarth();
+
+        histogramButton.fire();
     }
 
     /**

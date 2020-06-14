@@ -36,7 +36,7 @@ public class Earth implements IEarth {
      */
     public Earth(Pane pane3D, ArrayList<LatLonPair> knownLocations, ArrayList<Float> globalMinAndMaxTemp) {
         this.knownLocations = knownLocations;
-        histogramViewEnabled = true;
+        histogramViewEnabled = false;
 
         minGlobalTempAnomaly = globalMinAndMaxTemp.get(0);
         maxGlobalTempAnomaly = globalMinAndMaxTemp.get(1);
@@ -209,6 +209,15 @@ public class Earth implements IEarth {
     @Override
     public ArrayList<Color> getColors() {
         return colors;
+    }
+
+    /**
+     * To know which is the selected data view
+     * @return histogramViewEnabled value.
+     */
+    @Override
+    public boolean getHistogramViewEnabled() {
+        return histogramViewEnabled;
     }
 
     /**
