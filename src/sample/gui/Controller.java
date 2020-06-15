@@ -16,8 +16,10 @@ import javafx.scene.paint.Color;
 import javafx.util.Duration;
 import javafx.util.StringConverter;
 import sample.app.App;
+import sample.app.LatLonPair;
 import sample.app.YearTempAnomaly;
 import sample.gui.view2D.LatLonView;
+import sample.gui.view2D.PopUpPlot;
 import sample.gui.view2D.YearView;
 import sample.gui.view2D.Legend;
 import sample.gui.view3D.Earth;
@@ -39,15 +41,23 @@ public class Controller implements Initializable {
     private Slider yearSlider;
 
     private App model; // Application model
-    private Earth earth; // Earth 3D representation
-    private YearView yearView; // Show year in pane
-    private LatLonView latLonView; // Show lat lon mouse's position
-    private YearTempAnomaly currentYearTempAnomaly; // Temperature anomaly of current year
-    private String dataSelectedView; // Selected data visualization (histogram / quadrilateral)
     private int currentYear; // Current year
-    private boolean animationActive, animationIsForward; // Keep track of when animation is played or pause
+    private YearTempAnomaly currentYearTempAnomaly; // Temperature anomaly of current year
+
+    private Earth earth; // Earth 3D representation
+    private String dataSelectedView; // Selected data visualization (histogram / quadrilateral)
+
+    private LatLonView latLonView; // Show lat lon mouse's position
+
+    private YearView yearView; // Show year in pane
+
     private Timeline yearAnimation; // Animation
+    private boolean animationActive, animationIsForward; // Keep track of when animation is played or pause
     private int speedRate; // Animation's speed rate
+
+    private PopUpPlot popUpPlot; // Pop up window where plots are drawn
+    private double mousePressedX, mousePressedY; // To check if mouse is clicked or just used to move earth (with CameraManager)
+    private boolean popUpActive; // Kepp track if pop up is active or not
 
     /**
      * Initialize everything that doesn't need an access to the model.
@@ -62,6 +72,7 @@ public class Controller implements Initializable {
         latLonView = new LatLonView(pane3D);
         animationActive = false;
         animationIsForward = true;
+        popUpActive = false;
         speedLabel.setText("x1");
         speedRate = 1;
 
@@ -193,7 +204,9 @@ public class Controller implements Initializable {
     }
 
     /**
-     * Functionality: Permettre à l’utilisateur de sélectionner une zone du globe directement sur le globe et afficher sa latitude et sa longitude.
+     * Functionality:
+     *      - Permettre à l’utilisateur de sélectionner une zone du globe directement sur le globe et afficher sa latitude et sa longitude.
+     *      - Afficher un graphique 2D de l’évolution des anomalies de température de la zone sélectionnée en fonction des années.
      * 2nd initializer but this time it has access to the model.
      * @param app Application model.
      */
@@ -205,6 +218,35 @@ public class Controller implements Initializable {
             PickResult pr = mouseEvent.getPickResult(); // To intersection point
             latLonView.updateLatLon(earth.latLonFrom3dCoord(pr.getIntersectedPoint()));
         });
+
+        earth.getRoot3D().setOnMousePressed(mouseEvent -> {
+            mousePressedX = mouseEvent.getX();
+            mousePressedY = mouseEvent.getY();
+        });
+
+        earth.getRoot3D().setOnMouseReleased(mouseEvent -> {
+            if (mouseEvent.getX() == mousePressedX && mouseEvent.getY() == mousePressedY) {
+                PickResult pr = mouseEvent.getPickResult();
+                LatLonPair clickedPlace = earth.latLonFrom3dCoord(pr.getIntersectedPoint());
+
+                // We need to be a multiple of 4 for latitude and same for longitude but with an offset of 2 (in our data they are like 2, 6, 10...)
+                int correctedLat = clickedPlace.getLat(), correctedLon = clickedPlace.getLon();
+                if (clickedPlace.getLat() % 4 != 0)
+                    correctedLat = 4 * (Math.round((float) correctedLat / 4));
+                if ((clickedPlace.getLon() + 2) % 4 != 0) {
+                    correctedLon = 4 * (Math.round((float) correctedLon / 4));
+                    if (correctedLon > 178) correctedLon -= 2;
+                    else correctedLon += 2;
+                }
+
+                if (!popUpActive) { // We create a new pop up if it's not active
+                    popUpActive = true;
+                    popUpPlot = new PopUpPlot(clickedPlace.toString(), app.getAllTempAnomalyAtLatLon(correctedLat, correctedLon), app.getAvailableYears());
+                    popUpPlot.getStage().setOnCloseRequest(windowEvent -> popUpActive = false);
+                } else { // We add a curve on current one
+                    popUpPlot.addData(clickedPlace.toString(), app.getAllTempAnomalyAtLatLon(correctedLat, correctedLon), app.getAvailableYears());
+                }
+        }});
 
         new Legend(pane3D, model.getGlobalMinAndMax().get(0), model.getGlobalMinAndMax().get(1), earth.getColors());
 

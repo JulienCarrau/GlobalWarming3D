@@ -135,6 +135,9 @@ public class Earth implements IEarth {
         double lat;
         lat = Math.toDegrees(Math.acos(position.getY())) - 90 - TEXTURE_LAT_OFFSET;
         lon = ((180 + (-Math.atan2(position.getX() , position.getZ())) * 180 / Math.PI) % 360) - 180 - TEXTURE_LON_OFFSET;
+        if (lon > 180) lon = 180; // Remap to be sure we don't go further, we need to remap because of textures offsets
+        else if (lon < -180) lon = -180;
+
         return new LatLonPair((int) lat, (int) lon);
     }
 
