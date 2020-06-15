@@ -10,12 +10,14 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.PickResult;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.util.Duration;
 import javafx.util.StringConverter;
 import sample.app.App;
 import sample.app.YearTempAnomaly;
+import sample.gui.view2D.LatLonView;
 import sample.gui.view2D.YearView;
 import sample.gui.view2D.Legend;
 import sample.gui.view3D.Earth;
@@ -39,6 +41,7 @@ public class Controller implements Initializable {
     private App model; // Application model
     private Earth earth; // Earth 3D representation
     private YearView yearView; // Show year in pane
+    private LatLonView latLonView; // Show lat lon mouse's position
     private YearTempAnomaly currentYearTempAnomaly; // Temperature anomaly of current year
     private String dataSelectedView; // Selected data visualization (histogram / quadrilateral)
     private int currentYear; // Current year
@@ -56,6 +59,7 @@ public class Controller implements Initializable {
         dataSelectedView = "histogram"; // quadrilateral or histogram
         currentYear = 1880;
         yearView = new YearView(pane3D, currentYear);
+        latLonView = new LatLonView(pane3D);
         animationActive = false;
         animationIsForward = true;
         speedLabel.setText("x1");
@@ -147,6 +151,7 @@ public class Controller implements Initializable {
                 animationIsForward = true;
                 readUpBackWard.setGraphic(new ImageView(new Image("sample/gui/icons/backward.png")));
             }
+
             if (!animationActive) playPauseButton.fire();
         });
     }
@@ -188,12 +193,19 @@ public class Controller implements Initializable {
     }
 
     /**
+     * Functionality: Permettre à l’utilisateur de sélectionner une zone du globe directement sur le globe et afficher sa latitude et sa longitude.
      * 2nd initializer but this time it has access to the model.
      * @param app Application model.
      */
     public void linkModelAndController(App app) {
         model = app;
         earth = new Earth(pane3D, model.getKnownLocations(), model.getGlobalMinAndMax()); // Functionality: Afficher un globe en 3D et permettre à l’utilisateur tourner autour grâce à la souris.
+
+        earth.getRoot3D().setOnMouseMoved(mouseEvent -> { // Permettre à l’utilisateur de sélectionner une zone du globe directement sur le globe et afficher sa latitude et sa longitude.
+            PickResult pr = mouseEvent.getPickResult(); // To intersection point
+            latLonView.updateLatLon(earth.latLonFrom3dCoord(pr.getIntersectedPoint()));
+        });
+
         new Legend(pane3D, model.getGlobalMinAndMax().get(0), model.getGlobalMinAndMax().get(1), earth.getColors());
 
         currentYearTempAnomaly = model.getYearTempAnomaly(currentYear);

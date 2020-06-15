@@ -58,8 +58,8 @@ public class Earth implements IEarth {
             System.out.println(i.getMessage());
         }
         MeshView[] meshViews = objImporter.getImport();
-
-        root3D.getChildren().add(new Group(meshViews));
+        Group earth = new Group(meshViews);
+        root3D.getChildren().add(earth);
 
         // Add a camera group
         PerspectiveCamera camera = new PerspectiveCamera(true);
@@ -107,21 +107,35 @@ public class Earth implements IEarth {
     }
 
     /**
-     * Get a 3D point according to a latitude, longitude and a shpere radium.
+     * Get a 3D point according to a latitude, longitude and a shpere radius.
      * @param lat Latitude value.
      * @param lon Longitude value.
-     * @param radium Sphere's radium.
+     * @param radius Sphere's radius.
      * @return Point3D corresponding to a 3D location in space.
      */
-    private Point3D geoCoordTo3dCoord(double lat, double lon, double radium) {
+    private Point3D geoCoordTo3dCoord(double lat, double lon, double radius) {
         double lat_cor = lat + TEXTURE_LAT_OFFSET;
         double lon_cor = lon + TEXTURE_LON_OFFSET;
         return new Point3D(
                 -java.lang.Math.sin(java.lang.Math.toRadians(lon_cor))
-                        * java.lang.Math.cos(java.lang.Math.toRadians(lat_cor)) * radium,
-                -java.lang.Math.sin(java.lang.Math.toRadians(lat_cor)) * radium,
+                        * java.lang.Math.cos(java.lang.Math.toRadians(lat_cor)) * radius,
+                -java.lang.Math.sin(java.lang.Math.toRadians(lat_cor)) * radius,
                 java.lang.Math.cos(java.lang.Math.toRadians(lon_cor))
-                        * java.lang.Math.cos(java.lang.Math.toRadians(lat_cor)) * radium);
+                        * java.lang.Math.cos(java.lang.Math.toRadians(lat_cor)) * radius);
+    }
+
+    /**
+     * Reverse geoCoordTo3dCoord, it outputs a LatLonPair from a given 3D position.
+     * We assume that radius is 1 here.
+     * @param position 3D position to transpose into latitude and longitude.
+     * @return LatLonPair.
+     */
+    public LatLonPair latLonFrom3dCoord(Point3D position) {
+        double lon;
+        double lat;
+        lat = Math.toDegrees(Math.acos(position.getY())) - 90 - TEXTURE_LAT_OFFSET;
+        lon = ((180 + (-Math.atan2(position.getX() , position.getZ())) * 180 / Math.PI) % 360) - 180 - TEXTURE_LON_OFFSET;
+        return new LatLonPair((int) lat, (int) lon);
     }
 
     /**
@@ -203,21 +217,22 @@ public class Earth implements IEarth {
     }
 
     /**
+     * Root3D getter.
+     * Used to setup a listener to track mouse's latitude and longitude.
+     * @return Root3D group.
+     */
+    @Override
+    public Group getRoot3D() {
+        return root3D;
+    }
+
+    /**
      * Colors getter.
      * @return ArrayList<Color> containing all temperature colors.
      */
     @Override
     public ArrayList<Color> getColors() {
         return colors;
-    }
-
-    /**
-     * To know which is the selected data view
-     * @return histogramViewEnabled value.
-     */
-    @Override
-    public boolean getHistogramViewEnabled() {
-        return histogramViewEnabled;
     }
 
     /**
