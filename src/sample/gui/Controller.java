@@ -8,6 +8,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
+import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.PickResult;
@@ -99,6 +100,7 @@ public class Controller implements Initializable {
         Border whenMouseIsOver = new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, new CornerRadii(1), new BorderWidths(1)));
         Border otherwise = new Border(new BorderStroke(Color.TRANSPARENT, BorderStrokeStyle.SOLID, new CornerRadii(1), new BorderWidths(1)));
 
+        histogramButton.setTooltip(new Tooltip("Change to histogram view."));
         histogramButton.setBackground(invisible);
         histogramButton.borderProperty().bind(Bindings.when(histogramButton.hoverProperty()).then(whenMouseIsOver).otherwise(otherwise));
         histogramButton.setGraphic(new ImageView(new Image("sample/gui/icons/histogram.png")));
@@ -110,6 +112,7 @@ public class Controller implements Initializable {
             showDataOnEarth();
         });
 
+        quadrilateralButton.setTooltip(new Tooltip("Change to quadrilateral view."));
         quadrilateralButton.setBackground(invisible);
         quadrilateralButton.borderProperty().bind(Bindings.when(quadrilateralButton.hoverProperty()).then(whenMouseIsOver).otherwise(otherwise));
         quadrilateralButton.setGraphic(new ImageView(new Image("sample/gui/icons/quadrilateral.png")));
@@ -121,6 +124,7 @@ public class Controller implements Initializable {
             showDataOnEarth();
         });
 
+        playPauseButton.setTooltip(new Tooltip("Play/Pause time animation."));
         playPauseButton.setBackground(invisible);
         playPauseButton.borderProperty().bind(Bindings.when(playPauseButton.hoverProperty()).then(whenMouseIsOver).otherwise(otherwise));
         playPauseButton.setGraphic(new ImageView(new Image("sample/gui/icons/play.png")));
@@ -138,6 +142,7 @@ public class Controller implements Initializable {
             }
         });
 
+        speedButton.setTooltip(new Tooltip("Fast forward animation."));
         speedButton.setBackground(invisible);
         speedButton.borderProperty().bind(Bindings.when(speedButton.hoverProperty()).then(whenMouseIsOver).otherwise(otherwise));
         speedButton.setGraphic(new ImageView(new Image("sample/gui/icons/fast-forward.png")));
@@ -151,6 +156,7 @@ public class Controller implements Initializable {
             speedLabel.setText("x" + speedRate);
         });
 
+        readUpBackWard.setTooltip(new Tooltip("Play animation forward or backward."));
         readUpBackWard.setBackground(invisible);
         readUpBackWard.borderProperty().bind(Bindings.when(readUpBackWard.hoverProperty()).then(whenMouseIsOver).otherwise(otherwise));
         readUpBackWard.setGraphic(new ImageView(new Image("sample/gui/icons/backward.png")));
