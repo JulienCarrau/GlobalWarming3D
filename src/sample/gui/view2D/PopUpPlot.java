@@ -6,6 +6,7 @@ import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.chart.XYChart.Series;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
@@ -15,6 +16,7 @@ public class PopUpPlot {
     private final Stage stage;
     private ArrayList<Integer> years;
     private LineChart<String, Number> lineChart;
+    private ArrayList<Series<String, Number>> deleted;
 
     /**
      * Functionality: Afficher un graphique 2D de l’évolution des anomalies de température de la zone sélectionnée en fonction des années.
@@ -25,11 +27,13 @@ public class PopUpPlot {
      */
     public PopUpPlot(String dataName, ArrayList<Float> data, ArrayList<Integer> years) {
         this.years = years;
+        deleted = new ArrayList<>();
 
         final CategoryAxis xAxis = new CategoryAxis();
         final NumberAxis yAxis = new NumberAxis();
 
         xAxis.setLabel("Year");
+        xAxis.setAnimated(false);
         yAxis.setLabel("Temperature (°C)");
 
         lineChart = new LineChart<>(xAxis, yAxis);
@@ -41,6 +45,11 @@ public class PopUpPlot {
         addData(dataName, data, years);
 
         stage = new Stage();
+
+        stage.addEventHandler(KeyEvent.KEY_PRESSED, keyEvent -> {
+            if (keyEvent.getText().toLowerCase().equals("z") && keyEvent.isShortcutDown()) controlZ();
+        });
+
         stage.initModality(Modality.NONE);
         Scene scene = new Scene(lineChart, lineChart.getPrefWidth(), lineChart.getPrefHeight());
         stage.setTitle("Temperature evolution threw years at specific locations");
@@ -72,6 +81,24 @@ public class PopUpPlot {
             i++;
         }
         lineChart.getData().add(series);
-        series.getNode().setOnMouseClicked(mouseEvent -> lineChart.getData().remove(series));
+        series.getNode().setOnMouseClicked(mouseEvent -> {
+            deleted.add(series);
+            lineChart.getData().remove(series);
+        });
+    }
+
+    /**
+     *
+     */
+    private void controlZ() {
+        if (deleted.size() > 0) {
+            Series<String, Number> s = deleted.get(deleted.size() - 1);
+            lineChart.getData().add(s);
+            s.getNode().setOnMouseClicked(mouseEvent -> {
+                deleted.add(s);
+                lineChart.getData().remove(s);
+            });
+            deleted.remove(s);
+        }
     }
 }

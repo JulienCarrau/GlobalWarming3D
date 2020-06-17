@@ -18,6 +18,7 @@ import java.util.ArrayList;
 
 public class Earth implements IEarth {
     private Group root3D, histogramGroup, quadrilateralGroup; // Groups of 3D shapes
+    private CameraManager cameraManager;
     private boolean histogramViewEnabled;
     PhongMaterial transparent = new PhongMaterial(); // Transparent material
     private ArrayList<PhongMaterial> colorGradient, cylinderColorGradient; // Index 0 is blue and index 11 is red, cylinderColorGradient are opaque
@@ -63,7 +64,7 @@ public class Earth implements IEarth {
 
         // Add a camera group
         PerspectiveCamera camera = new PerspectiveCamera(true);
-        new CameraManager(camera, pane3D, root3D);
+        cameraManager = new CameraManager(camera, pane3D, root3D);
 
         // Add ambient light
         AmbientLight ambientLight = new AmbientLight(Color.WHITE);
@@ -145,6 +146,15 @@ public class Earth implements IEarth {
         else if (lon < -180) lon = -180;
 
         return new LatLonPair((int) lat, (int) lon);
+    }
+
+    /**
+     * CameraManager getter. Allow from controller to access directly to cameraManager.
+     * @return CameraManager instance.
+     */
+    @Override
+    public CameraManager getCameraManager() {
+        return cameraManager;
     }
 
     /**

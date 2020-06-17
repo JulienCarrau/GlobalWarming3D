@@ -3,17 +3,17 @@ package sample.gui;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.beans.binding.Bindings;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Cursor;
-import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.PickResult;
+import javafx.scene.input.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.util.Duration;
@@ -74,6 +74,8 @@ public class Controller implements Initializable {
         speedLabel.setText("x1");
         speedRate = 1;
 
+        new AutomaticRotationInfo(pane3D); // just to display an information
+
         yearAnimation = new Timeline(new KeyFrame(Duration.seconds(1), actionEvent1 -> {
             goToNextYear();
             yearSlider.valueProperty().setValue(currentYear);
@@ -85,6 +87,7 @@ public class Controller implements Initializable {
 
         setupButtons();
         setupSlider();
+        setupKeyBoardListeners();
     }
 
     /**
@@ -173,6 +176,13 @@ public class Controller implements Initializable {
         });
     }
 
+    private void setupKeyBoardListeners() {
+        pane3D.getParent().addEventHandler(KeyEvent.ANY, keyEvent -> {
+            if (keyEvent.getText().toLowerCase().equals("r")) earth.getCameraManager().automaticRotation();
+            if (keyEvent.getCharacter().equals(" ")) playPauseButton.fire();
+        });
+    }
+
     /**
      * Functionality: Permettre à l’utilisateur de choisir l’année affichée.
      * Initialize slider and its listeners.
@@ -219,7 +229,20 @@ public class Controller implements Initializable {
     public void linkModelAndController(App app) {
         model = app;
         earth = new Earth(pane3D, model.getKnownLocations(), model.getGlobalMinAndMax()); // Functionality: Afficher un globe en 3D et permettre à l’utilisateur tourner autour grâce à la souris.
+        setupEarthListeners(app);
 
+        new Legend(pane3D, model.getGlobalMinAndMax().get(0), model.getGlobalMinAndMax().get(1), earth.getColors());
+
+        currentYearTempAnomaly = model.getYearTempAnomaly(currentYear);
+
+        histogramButton.fire();
+    }
+
+    /**
+     * Set up a bunch of listeners to earth's instance.
+     * @param app Application model.
+     */
+    private void setupEarthListeners(App app) {
         earth.getRoot3D().setCursor(Cursor.HAND);
 
         earth.getRoot3D().setOnMouseMoved(mouseEvent -> { // Permettre à l’utilisateur de sélectionner une zone du globe directement sur le globe et afficher sa latitude et sa longitude.
@@ -260,12 +283,6 @@ public class Controller implements Initializable {
         });
 
         earth.getRoot3D().setOnMouseExited(mouseEvent -> latLonView.notOverEarthLatLon());
-
-        new Legend(pane3D, model.getGlobalMinAndMax().get(0), model.getGlobalMinAndMax().get(1), earth.getColors());
-
-        currentYearTempAnomaly = model.getYearTempAnomaly(currentYear);
-
-        histogramButton.fire();
     }
 
     /**

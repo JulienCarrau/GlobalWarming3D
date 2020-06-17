@@ -14,4 +14,5 @@ public interface IEarth {
     Group getRoot3D();
     ArrayList<Color> getColors();
     LatLonPair latLonFrom3dCoord(Point3D position);
+    CameraManager getCameraManager();
 }

@@ -71,7 +71,7 @@
                 <rowConstraints>
                     <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                 </rowConstraints>
-                <Label text="Year:" />
+                <Label text="Time:" />
                 <Slider fx:id="yearSlider" prefHeight="16.0" prefWidth="429.0" GridPane.columnIndex="1" />
                 <HBox alignment="CENTER" prefHeight="84.0" prefWidth="85.0" GridPane.columnIndex="2">
                     <Button fx:id="playPauseButton" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" prefHeight="30.0" prefWidth="30.0" />

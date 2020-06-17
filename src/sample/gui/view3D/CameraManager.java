@@ -1,8 +1,13 @@
 package sample.gui.view3D;
 
+import javafx.animation.Animation;
+import javafx.animation.KeyFrame;
+import javafx.animation.RotateTransition;
+import javafx.animation.Timeline;
 import javafx.scene.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.transform.Rotate;
+import javafx.util.Duration;
 
 public class CameraManager {
 
@@ -24,9 +29,14 @@ public class CameraManager {
     private double mouseDeltaX;
     private double mouseDeltaY;
 
+    private boolean automaticRotationIsActive;
+    private Timeline rotateAnimation;
+
     private final Camera camera;
 
     public CameraManager(Camera cam, Node mainRoot, Group root) {
+        automaticRotationIsActive = false;
+
         camera = cam;
 
         root.getChildren().add(cameraXform);
@@ -43,11 +53,18 @@ public class CameraManager {
         ry.setAngle(CAMERA_INITIAL_Y_ANGLE);
         rx.setAngle(CAMERA_INITIAL_X_ANGLE);
 
+        rotateAnimation = new Timeline(new KeyFrame(Duration.millis(10), actionEvent1 -> ry.setAngle(ry.getAngle() + 0.1)));
+        rotateAnimation.setCycleCount(Animation.INDEFINITE);
+
         // Add keyboard and mouse handler
         handleKeyboard(mainRoot);
         handleMouse(mainRoot);
     }
 
+    /**
+     * Setter of listeners to move camera around earth.
+     * @param mainRoot Node to set listener.
+     */
     private void handleMouse(Node mainRoot) {
         mainRoot.setOnMousePressed(me -> {
             mousePosX = me.getSceneX();
@@ -76,6 +93,10 @@ public class CameraManager {
         mainRoot.setOnMouseReleased(mouseEvent -> mainRoot.setCursor(Cursor.OPEN_HAND));
     }
 
+    /**
+     * To set keu listener which reset camera view.
+     * @param mainRoot Node to set listener.
+     */
     private void handleKeyboard(Node mainRoot) {
         mainRoot.setOnKeyPressed(event -> {
             if (event.getCode() == KeyCode.ALT) {
@@ -88,5 +109,15 @@ public class CameraManager {
                 rx.setAngle(CAMERA_INITIAL_X_ANGLE);
             }
         });
+    }
+
+    public void automaticRotation() {
+        if (automaticRotationIsActive) {
+            automaticRotationIsActive = false;
+            rotateAnimation.pause();
+        } else {
+            automaticRotationIsActive = true;
+            rotateAnimation.play();
+        }
     }
 }
