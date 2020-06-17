@@ -10,7 +10,7 @@ import java.util.ArrayList;
 
 public class Legend {
     private Group root;
-    private Text minText, maxText;
+    private Text minText, maxText, middleText;
 
     /**
      * Legend's constructor.
@@ -37,8 +37,14 @@ public class Legend {
         maxText.setTranslateY(10);
         root.getChildren().add(maxText);
 
+        middleText = new Text();
+        middleText.setTranslateX(32);
+        middleText.setTranslateY(110);
+        root.getChildren().add(middleText);
+
         setMin(min);
         setMax(max);
+        middleText.setText("0°C");
 
         setRectanglesWithColors(colors);
     }

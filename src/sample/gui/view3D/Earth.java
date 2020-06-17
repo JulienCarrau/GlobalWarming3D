@@ -15,12 +15,13 @@ import sample.app.YearTempAnomaly;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class Earth implements IEarth {
     private Group root3D, histogramGroup, quadrilateralGroup; // Groups of 3D shapes
     private boolean histogramViewEnabled;
     PhongMaterial transparent = new PhongMaterial(); // Transparent material
-    private ArrayList<PhongMaterial> colorGradient; // Index 0 is blue and index 11 is red
+    private ArrayList<PhongMaterial> colorGradient, cylinderColorGradient; // Index 0 is blue and index 11 is red, cylinderColorGradient are opaque
     private final ArrayList<LatLonPair> knownLocations;
     private ArrayList<Color> colors;
     private final float colorStep, minGlobalTempAnomaly, maxGlobalTempAnomaly; // Correspond to how much a temperature needs to vary to change color
@@ -82,6 +83,7 @@ public class Earth implements IEarth {
      */
     private void setColorGradient() {
         colorGradient = new ArrayList<>();
+        cylinderColorGradient = new ArrayList<>();
         PhongMaterial material;
 
         colors = new ArrayList<>(); // All 12 colors
@@ -91,18 +93,23 @@ public class Earth implements IEarth {
         colors.add(new Color(0.47, 0.47, 1, 0.05));
         colors.add(new Color(0.64, 0.64, 1, 0.05));
         colors.add(new Color(0.75, 0.75, 1, 0.05));
-        colors.add(new Color(1, 0.94, 0, 0.05));
-        colors.add(new Color(1, 0.81, 0, 0.05));
-        colors.add(new Color(1, 0.6, 0, 0.05));
-        colors.add(new Color(1, 0.38, 0.01, 0.05));
-        colors.add(new Color(1, 0.17, 0.02, 0.05));
-        colors.add(new Color(0.94, 0.02, 0.02, 0.05));
+        colors.add(new Color(0.9, 0.84, 0, 0.05));
+        colors.add(new Color(0.9, 0.71, 0, 0.05));
+        colors.add(new Color(0.9, 0.5, 0, 0.05));
+        colors.add(new Color(0.9, 0.28, 0, 0.05));
+        colors.add(new Color(0.9, 0.07, 0, 0.05));
+        colors.add(new Color(0.84, 0, 0, 0.05));
 
-        for (int i = 0; i < 12; i++) {
-            material = new PhongMaterial();
-            material.setSpecularColor(colors.get(i));
-            material.setDiffuseColor(colors.get(i));
+        for (Color color : colors) {
+            material = new PhongMaterial(); // This one is nearly transparent
+            material.setSpecularColor(color);
+            material.setDiffuseColor(color);
             colorGradient.add(material);
+
+            material = new PhongMaterial(); // This one is opaque
+            material.setSpecularColor(new Color(color.getRed(), color.getGreen(), color.getBlue(), 1));
+            material.setDiffuseColor(new Color(color.getRed(), color.getGreen(), color.getBlue(), 1));
+            cylinderColorGradient.add(material);
         }
     }
 
@@ -184,7 +191,10 @@ public class Earth implements IEarth {
         for (LatLonPair pair : knownLocations) {
             temperature = anomaly.getLocalTempAnomaly(pair.getLat(), pair.getLon());
             if (!temperature.equals(Float.NaN)) {
-                colorIndex = (int) ((anomaly.getLocalTempAnomaly(pair.getLat(), pair.getLon()) - minGlobalTempAnomaly) / colorStep);
+                if (temperature > 0)
+                    colorIndex = Math.min(6 + (int) ((anomaly.getLocalTempAnomaly(pair.getLat(), pair.getLon())) / colorStep), 11);
+                else
+                    colorIndex = (int) ((anomaly.getLocalTempAnomaly(pair.getLat(), pair.getLon()) - minGlobalTempAnomaly) / colorStep);
                 ((MeshView) quadrilateralGroup.getChildren().get(i)).setMaterial(colorGradient.get(colorIndex));
             } else
                 ((MeshView) quadrilateralGroup.getChildren().get(i)).setMaterial(transparent);
@@ -211,8 +221,8 @@ public class Earth implements IEarth {
         for (LatLonPair pair : knownLocations) {
             temperature = anomaly.getLocalTempAnomaly(pair.getLat(), pair.getLon());
             if (!temperature.equals(Float.NaN) && temperature > 0) {
-                colorIndex = (int) ((anomaly.getLocalTempAnomaly(pair.getLat(), pair.getLon()) - minGlobalTempAnomaly) / colorStep);
-                updateBar((Cylinder) histogramGroup.getChildren().get(i), pair.getLat(), pair.getLon(), temperature, colorGradient.get(colorIndex));
+                colorIndex = 6 + (int) (anomaly.getLocalTempAnomaly(pair.getLat(), pair.getLon()) / colorStep); // Index for positive temperature is between 6 and 11
+                updateBar((Cylinder) histogramGroup.getChildren().get(i), pair.getLat(), pair.getLon(), temperature, cylinderColorGradient.get(Math.min(colorIndex, 11)));
             } else
                 ((Cylinder) histogramGroup.getChildren().get(i)).setMaterial(transparent);
             i++;
@@ -354,7 +364,7 @@ public class Earth implements IEarth {
         double angle = Math.acos(diff.normalize().dotProduct(yAxis));
         Rotate rotateAroundCenter = new Rotate(-Math.toDegrees(angle), axisOfRotation);
 
-        Cylinder bar = new Cylinder(0.01f, height);
+        Cylinder bar = new Cylinder(0.01f, height, 8); // Less divisions = more fluidity
 
         bar.getTransforms().addAll(moveToMidpoint, rotateAroundCenter);
 
