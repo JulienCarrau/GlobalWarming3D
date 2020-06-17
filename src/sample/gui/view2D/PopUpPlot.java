@@ -45,7 +45,7 @@ public class PopUpPlot {
 
         lineChart = new LineChartWithMarkers<>(xAxis, yAxis);
 
-        lineChart.setTitle("Temperature evolution threw years at specific locations (click on a line to delete it and CTRL+Z to restore it).");
+        lineChart.setTitle("Temperature evolution through years at specific locations (click on a line to delete it and CTRL+Z to restore it).");
         lineChart.setPrefHeight(700);
         lineChart.setPrefWidth(1400);
 
