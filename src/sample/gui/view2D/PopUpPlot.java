@@ -1,5 +1,6 @@
 package sample.gui.view2D;
 
+import javafx.scene.Cursor;
 import javafx.scene.Scene;
 import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.LineChart;
@@ -7,6 +8,7 @@ import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.chart.XYChart.Series;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
@@ -38,7 +40,7 @@ public class PopUpPlot {
 
         lineChart = new LineChart<>(xAxis, yAxis);
 
-        lineChart.setTitle("Temperature evolution threw years at specific locations (click on a line to delete it).");
+        lineChart.setTitle("Temperature evolution threw years at specific locations (click on a line to delete it and CTRL+Z to restore it).");
         lineChart.setPrefHeight(700);
         lineChart.setPrefWidth(1400);
 
@@ -55,6 +57,8 @@ public class PopUpPlot {
         stage.setTitle("Temperature evolution threw years at specific locations");
         stage.setScene(scene);
         stage.show();
+
+        stage.addEventHandler(MouseEvent.ANY, mouseEvent -> scene.setCursor(Cursor.CROSSHAIR)); // Change cursor for this window
     }
 
     /**
@@ -88,7 +92,7 @@ public class PopUpPlot {
     }
 
     /**
-     *
+     * Restore last curve when CTRL+Z is pressed.
      */
     private void controlZ() {
         if (deleted.size() > 0) {
