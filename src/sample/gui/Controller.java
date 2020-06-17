@@ -177,9 +177,8 @@ public class Controller implements Initializable {
     }
 
     private void setupKeyBoardListeners() {
-        pane3D.getParent().addEventHandler(KeyEvent.ANY, keyEvent -> {
+        pane3D.getParent().addEventHandler(KeyEvent.KEY_PRESSED, keyEvent -> {
             if (keyEvent.getText().toLowerCase().equals("r")) earth.getCameraManager().automaticRotation();
-            if (keyEvent.getCharacter().equals(" ")) playPauseButton.fire();
         });
     }
 
@@ -216,6 +215,8 @@ public class Controller implements Initializable {
             yearView.setYear(currentYear);
             currentYearTempAnomaly = model.getYearTempAnomaly(currentYear);
             showDataOnEarth();
+
+            if (popUpActive) popUpPlot.updateCurrentYear(currentYear); // For updating current year's line in pop up
         });
     }
 
@@ -257,7 +258,7 @@ public class Controller implements Initializable {
         });
 
         earth.getRoot3D().setOnMouseReleased(mouseEvent -> {
-            if (mouseEvent.getX() == mousePressedX && mouseEvent.getY() == mousePressedY) {
+            if (mouseEvent.getX() == mousePressedX && mouseEvent.getY() == mousePressedY && !earth.getCameraManager().getAutomaticRotationIsActive()) {
                 PickResult pr = mouseEvent.getPickResult();
                 LatLonPair clickedPlace = earth.latLonFrom3dCoord(pr.getIntersectedPoint());
 
@@ -273,7 +274,7 @@ public class Controller implements Initializable {
 
                 if (!popUpActive) { // We create a new pop up if it's not active
                     popUpActive = true;
-                    popUpPlot = new PopUpPlot(clickedPlace.toString(), app.getAllTempAnomalyAtLatLon(correctedLat, correctedLon), app.getAvailableYears());
+                    popUpPlot = new PopUpPlot(clickedPlace.toString(), app.getAllTempAnomalyAtLatLon(correctedLat, correctedLon), app.getAvailableYears(), currentYear);
                     popUpPlot.getStage().setOnCloseRequest(windowEvent -> popUpActive = false);
                 } else { // We add a curve on current one
                     popUpPlot.addData(clickedPlace.toString(), app.getAllTempAnomalyAtLatLon(correctedLat, correctedLon), app.getAvailableYears());

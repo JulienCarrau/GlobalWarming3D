@@ -111,6 +111,9 @@ public class CameraManager {
         });
     }
 
+    /**
+     * Either play or pause rotation animation (reverse its ancient state)
+     */
     public void automaticRotation() {
         if (automaticRotationIsActive) {
             automaticRotationIsActive = false;
@@ -119,5 +122,13 @@ public class CameraManager {
             automaticRotationIsActive = true;
             rotateAnimation.play();
         }
+    }
+
+    /**
+     * automaticRotationIsActive getter.
+     * @return automaticRotationIsActive.
+     */
+    public boolean getAutomaticRotationIsActive() {
+        return automaticRotationIsActive;
     }
 }
