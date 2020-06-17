@@ -22,23 +22,23 @@ public class Legend {
     public Legend(Pane pane, float min, float max, ArrayList<Color> colors) {
         root = new Group();
 
-        SubScene scene = new SubScene(root, 60, 220);
-        scene.setLayoutX(940);
-        scene.setLayoutY(235);
+        SubScene scene = new SubScene(root, 80, 200);
+        scene.setLayoutX(910);
+        scene.setLayoutY(225);
         pane.getChildren().add(scene);
 
         minText = new Text();
-        minText.setTranslateX(10);
-        minText.setTranslateY(210);
+        minText.setTranslateX(35);
+        minText.setTranslateY(200);
         root.getChildren().add(minText);
 
         maxText = new Text();
-        maxText.setTranslateX(10);
-        maxText.setTranslateY(10);
+        maxText.setTranslateX(35);
+        maxText.setTranslateY(20);
         root.getChildren().add(maxText);
 
         middleText = new Text();
-        middleText.setTranslateX(32);
+        middleText.setTranslateX(35);
         middleText.setTranslateY(110);
         root.getChildren().add(middleText);
 
