@@ -247,7 +247,8 @@ public class Controller implements Initializable {
                 } else { // We add a curve on current one
                     popUpPlot.addData(clickedPlace.toString(), app.getAllTempAnomalyAtLatLon(correctedLat, correctedLon), app.getAvailableYears());
                 }
-        }});
+            }
+        });
 
         new Legend(pane3D, model.getGlobalMinAndMax().get(0), model.getGlobalMinAndMax().get(1), earth.getColors());
 
