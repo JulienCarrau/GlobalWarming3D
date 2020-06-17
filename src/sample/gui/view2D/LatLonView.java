@@ -43,4 +43,12 @@ public class LatLonView {
         this.lat.setText("Lat: " + llp.getLat());
         this.lon.setText("Lon:" + llp.getLon());
     }
+
+    /**
+     * When mouse is not over earth, there is no lat or lon to show.
+     */
+    public void notOverEarthLatLon() {
+        this.lat.setText("Lat: ");
+        this.lon.setText("Lon:");
+    }
 }

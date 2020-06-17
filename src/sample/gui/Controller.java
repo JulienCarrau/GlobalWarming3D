@@ -259,6 +259,8 @@ public class Controller implements Initializable {
             earth.getRoot3D().setCursor(Cursor.HAND);
         });
 
+        earth.getRoot3D().setOnMouseExited(mouseEvent -> latLonView.notOverEarthLatLon());
+
         new Legend(pane3D, model.getGlobalMinAndMax().get(0), model.getGlobalMinAndMax().get(1), earth.getColors());
 
         currentYearTempAnomaly = model.getYearTempAnomaly(currentYear);
