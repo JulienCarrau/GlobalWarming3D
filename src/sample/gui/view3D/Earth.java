@@ -15,7 +15,6 @@ import sample.app.YearTempAnomaly;
 
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collections;
 
 public class Earth implements IEarth {
     private Group root3D, histogramGroup, quadrilateralGroup; // Groups of 3D shapes
