@@ -14,6 +14,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -66,7 +67,7 @@ public class PopUpPlot {
         stage.setScene(scene);
         stage.show();
 
-        stage.addEventHandler(MouseEvent.ANY, mouseEvent -> scene.setCursor(Cursor.CROSSHAIR)); // Change cursor for this window
+        lineChart.addEventHandler(MouseEvent.ANY, event -> lineChart.setCursor(Cursor.CROSSHAIR));
     }
 
     /**
