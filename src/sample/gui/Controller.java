@@ -5,6 +5,8 @@ import javafx.animation.Timeline;
 import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Cursor;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
@@ -77,6 +79,9 @@ public class Controller implements Initializable {
             yearSlider.valueProperty().setValue(currentYear);
         }));
         yearAnimation.setCycleCount(Timeline.INDEFINITE);
+
+        pane3D.setOnMouseEntered(mouseEvent -> pane3D.setCursor(Cursor.OPEN_HAND));
+        pane3D.setOnMouseExited(mouseEvent -> pane3D.setCursor(Cursor.DEFAULT));
 
         setupButtons();
         setupSlider();
@@ -215,6 +220,8 @@ public class Controller implements Initializable {
         model = app;
         earth = new Earth(pane3D, model.getKnownLocations(), model.getGlobalMinAndMax()); // Functionality: Afficher un globe en 3D et permettre à l’utilisateur tourner autour grâce à la souris.
 
+        earth.getRoot3D().setCursor(Cursor.HAND);
+
         earth.getRoot3D().setOnMouseMoved(mouseEvent -> { // Permettre à l’utilisateur de sélectionner une zone du globe directement sur le globe et afficher sa latitude et sa longitude.
             PickResult pr = mouseEvent.getPickResult(); // To intersection point
             latLonView.updateLatLon(earth.latLonFrom3dCoord(pr.getIntersectedPoint()));
@@ -223,6 +230,7 @@ public class Controller implements Initializable {
         earth.getRoot3D().setOnMousePressed(mouseEvent -> {
             mousePressedX = mouseEvent.getX();
             mousePressedY = mouseEvent.getY();
+            earth.getRoot3D().setCursor(Cursor.CLOSED_HAND);
         });
 
         earth.getRoot3D().setOnMouseReleased(mouseEvent -> {
@@ -248,6 +256,7 @@ public class Controller implements Initializable {
                     popUpPlot.addData(clickedPlace.toString(), app.getAllTempAnomalyAtLatLon(correctedLat, correctedLon), app.getAvailableYears());
                 }
             }
+            earth.getRoot3D().setCursor(Cursor.HAND);
         });
 
         new Legend(pane3D, model.getGlobalMinAndMax().get(0), model.getGlobalMinAndMax().get(1), earth.getColors());

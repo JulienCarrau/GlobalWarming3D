@@ -57,6 +57,8 @@ public class CameraManager {
 
             // Set focus on the mainRoot to be able to detect key press
             mainRoot.requestFocus();
+
+            mainRoot.setCursor(Cursor.CLOSED_HAND);
         });
 
         mainRoot.setOnMouseDragged(me -> {
@@ -70,6 +72,8 @@ public class CameraManager {
             ry.setAngle(ry.getAngle() + mouseDeltaX * 0.1 * ROTATION_SPEED);
             rx.setAngle(rx.getAngle() - mouseDeltaY * 0.1 * ROTATION_SPEED);
         });
+
+        mainRoot.setOnMouseReleased(mouseEvent -> mainRoot.setCursor(Cursor.OPEN_HAND));
     }
 
     private void handleKeyboard(Node mainRoot) {
