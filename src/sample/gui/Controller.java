@@ -16,14 +16,9 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.util.Duration;
 import javafx.util.StringConverter;
-import sample.app.App;
-import sample.app.LatLonPair;
-import sample.app.YearTempAnomaly;
-import sample.gui.view2D.LatLonView;
-import sample.gui.view2D.PopUpPlot;
-import sample.gui.view2D.YearView;
-import sample.gui.view2D.Legend;
+import sample.app.*;
 import sample.gui.view3D.Earth;
+import sample.gui.view2D.*;
 
 import java.net.URL;
 import java.util.ResourceBundle;
