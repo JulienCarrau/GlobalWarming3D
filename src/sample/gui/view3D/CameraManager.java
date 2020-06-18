@@ -2,7 +2,6 @@ package sample.gui.view3D;
 
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
-import javafx.animation.RotateTransition;
 import javafx.animation.Timeline;
 import javafx.scene.*;
 import javafx.scene.input.KeyCode;
