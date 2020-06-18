@@ -16,11 +16,12 @@ public class Main extends Application {
 
         Parent root = fxmlLoader.load();
 
-        // link between view and model (app)
+        // get instance of controller
         Controller controller = fxmlLoader.getController();
         // application part of project
         App app = new App("src/sample/app/data/tempanomaly_4x4grid.csv");
 
+        // link between view and model (app)
         controller.linkModelAndController(app);
 
         primaryStage.setTitle("GlobalWarming3D");
