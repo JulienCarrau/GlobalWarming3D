@@ -3,6 +3,7 @@ package sample.gui.view2D;
 import javafx.scene.Group;
 import javafx.scene.SubScene;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
@@ -14,6 +15,8 @@ public class YearView {
         root = new Group();
         this.year = new Text();
         this.year.setFont(new Font(20));
+        this.year.setStroke(Color.WHITE);
+        this.year.setFill(Color.WHITE);
         this.year.setTranslateY(20);
         root.getChildren().add(this.year);
 

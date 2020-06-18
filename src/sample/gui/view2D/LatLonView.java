@@ -3,6 +3,7 @@ package sample.gui.view2D;
 import javafx.scene.Group;
 import javafx.scene.SubScene;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import sample.app.LatLonPair;
@@ -18,15 +19,21 @@ public class LatLonView {
      */
     public LatLonView(Pane pane) {
         root = new Group();
-        this.lat = new Text("Lat: ");
-        this.lat.setFont(new Font(15));
-        this.lat.setTranslateY(15);
-        root.getChildren().add(this.lat);
+        lat = new Text("Lat:  ");
+        lat.setFont(new Font(15));
+        lat.setTranslateY(15);
+        lat.setStrokeWidth(0.5);
+        lat.setStroke(Color.WHITE);
+        lat.setFill(Color.WHITE);
+        root.getChildren().add(lat);
 
-        this.lon = new Text("Lon:");
-        this.lon.setFont(new Font(15));
-        this.lon.setTranslateY(35);
-        root.getChildren().add(this.lon);
+        lon = new Text("Lon: ");
+        lon.setFont(new Font(15));
+        lon.setTranslateY(35);
+        lon.setStrokeWidth(0.5);
+        lon.setStroke(Color.WHITE);
+        lon.setFill(Color.WHITE);
+        root.getChildren().add(lon);
 
         SubScene scene = new SubScene(root, 70, 60);
         scene.setLayoutX(930);
@@ -40,15 +47,15 @@ public class LatLonView {
      * @param llp LatLonPair for updating texts.
      */
     public void updateLatLon(LatLonPair llp) {
-        this.lat.setText("Lat: " + llp.getLat());
-        this.lon.setText("Lon:" + llp.getLon());
+        lat.setText("Lat:  " + llp.getLat());
+        lon.setText("Lon: " + llp.getLon());
     }
 
     /**
      * When mouse is not over earth, there is no lat or lon to show.
      */
     public void notOverEarthLatLon() {
-        this.lat.setText("Lat: ");
-        this.lon.setText("Lon:");
+        lat.setText("Lat: ");
+        lon.setText("Lon:");
     }
 }
