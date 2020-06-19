@@ -335,8 +335,8 @@ public class Earth implements IEarth {
      * @param material Desired material for this bar.
      */
     private void addHistogramBarFromCenterAndDiameter(float lat, float lon, float height, PhongMaterial material) {
-        Point3D base = geoCoordTo3dCoord(lat, lon, 1);
-        Point3D top = geoCoordTo3dCoord(lat, lon, 1 + height / (3 * maxGlobalTempAnomaly)); // 3 is a reduction factor
+        Point3D base = geoCoordTo3dCoord(lat, lon, 0);
+        Point3D top = geoCoordTo3dCoord(lat, lon, 1 + Math.round(100 * height) / (100f * (3 * maxGlobalTempAnomaly))); // 3 is a reduction factor
 
         addHistogramBar(base, top, material);
     }
@@ -390,8 +390,8 @@ public class Earth implements IEarth {
      * @param material Desired material for this bar.
      */
     private void updateBar(Cylinder bar, float lat, float lon, float temperature, PhongMaterial material) {
-        Point3D origin = geoCoordTo3dCoord(lat, lon, 1);
-        Point3D target = geoCoordTo3dCoord(lat, lon, 1 + temperature / (3 * maxGlobalTempAnomaly)); // 3 is a reduction factor
+        Point3D origin = geoCoordTo3dCoord(lat, lon, 0);
+        Point3D target = geoCoordTo3dCoord(lat, lon, 1 + Math.round(100 * temperature) / (100f * (3 * maxGlobalTempAnomaly))); // 3 is a reduction factor
 
         Point3D yAxis = new Point3D(0, 1, 0);
         Point3D diff = target.subtract(origin);
